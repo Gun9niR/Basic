@@ -28,34 +28,33 @@ private:
         {"END", TokenType::END},
     };
 
-    map<int, QString>& rawInstruction;
-    map<int, shared_ptr<QList<Token>>>& tokens;
-
     // string being scanned
     QStringRef source;
 
-    // pointers to char
+    // pointers to source
     int start;
     int current;
 
     // length of the string being scanned
     int length;
+
 private:
-    shared_ptr<QList<Token>> getLineToken();
+    void getOneToken(shared_ptr<QList<shared_ptr<Token>>> list);
 
-    void getOneToken(shared_ptr<QList<Token>> list);
-
-    // helper function
     bool isAtEnd();
+
     QChar advance();
+
     QChar peek();
+
     QStringRef getNumber();
+
     QStringRef getIdentifier();
 
 public:
-    Scanner(map<int, QString>& i, map<int, shared_ptr<QList<Token>>>& t);
+    Scanner();
 
-    void getTokens();
+    shared_ptr<QList<shared_ptr<Token>>> getTokens(QString str);
 };
 
 #endif // SCANNER_H

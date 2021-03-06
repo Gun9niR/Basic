@@ -1,31 +1,12 @@
 #include "Scanner.h"
 #include "qdebug.h"
 
-Scanner::Scanner(map<int, QString>& i, map<int, shared_ptr<QList<Token>>>& t):
-    rawInstruction(i), tokens(t),
-    source(), length(0), start(0), current(0) {}
+Scanner::Scanner():
+    source(), start(0), current(0), length(0) {}
 
-void Scanner::getTokens() {
-    // iterate through each line of string
-    for (auto i = rawInstruction.begin(); i != rawInstruction.end(); ++i) {
-        int lineNum = i->first;
-        source = &i->second;
-
-        try {
-            // a tokenList stores the token from one line of string
-            auto tokenList = getLineToken();
-
-            // put the pointer to the list into the tokens map
-            tokens[lineNum] = tokenList;
-        } catch (QString errMsg) {
-            throw QString(QString::number(lineNum) + ": " + errMsg);
-        }
-    }
-}
-
-shared_ptr<QList<Token>> Scanner::getLineToken() {
-    shared_ptr<QList<Token>> list = make_shared<QList<Token>>();
-
+shared_ptr<QList<shared_ptr<Token>>> Scanner::getTokens(QString str) {
+    shared_ptr<QList<shared_ptr<Token>>> list = make_shared<QList<shared_ptr<Token>>>();
+    source = &str;
     start = 0;
     current = 0;
     length = source.length();
@@ -41,41 +22,41 @@ shared_ptr<QList<Token>> Scanner::getLineToken() {
     return list;
 }
 
-void Scanner::getOneToken(shared_ptr<QList<Token>> list) {
+void Scanner::getOneToken(shared_ptr<QList<shared_ptr<Token>>> list) {
     auto c = advance();
 
     switch (c.unicode()) {
     case '(':
-        list->push_back(Token(TokenType::LEFT_PAREN, "("));
+        list->push_back(make_shared<Token>(TokenType::LEFT_PAREN, "("));
         break;
     case ')':
-        list->push_back(Token(TokenType::RIGHT_PAREN, ")"));
+        list->push_back(make_shared<Token>(TokenType::RIGHT_PAREN, ")"));
         break;
     case '+':
-        list->push_back(Token(TokenType::PLUS, "+"));
+        list->push_back(make_shared<Token>(TokenType::PLUS, "+"));
         break;
     case '-':
-        list->push_back(Token(TokenType::MINUS, "-"));
+        list->push_back(make_shared<Token>(TokenType::MINUS, "-"));
         break;
     case '*':
         if (peek().unicode() == '*') {
             ++current;
-            list->push_back(Token(TokenType::POWER, "**"));
+            list->push_back(make_shared<Token>(TokenType::POWER, "**"));
         } else {
-            list->push_back(Token(TokenType::STAR, "*"));
+            list->push_back(make_shared<Token>(TokenType::STAR, "*"));
         }
         break;
     case '/':
-        list->push_back(Token(TokenType::SLASH, "/"));
+        list->push_back(make_shared<Token>(TokenType::SLASH, "/"));
         break;
     case '=':
-        list->push_back(Token(TokenType::EQUAL, "="));
+        list->push_back(make_shared<Token>(TokenType::EQUAL, "="));
         break;
     case '<':
-        list->push_back(Token(TokenType::LESS, "<"));
+        list->push_back(make_shared<Token>(TokenType::LESS, "<"));
         break;
     case '>':
-        list->push_back(Token(TokenType::GREATER, ">"));
+        list->push_back(make_shared<Token>(TokenType::GREATER, ">"));
         break;
     case ' ':
     case '\t':
@@ -88,7 +69,7 @@ void Scanner::getOneToken(shared_ptr<QList<Token>> list) {
             QString numString = getNumber().toString();
             double val = numString.toDouble();
 
-            list->push_back(Token(TokenType::NUMBER, numString, val));
+            list->push_back(make_shared<Token>(TokenType::NUMBER, numString, val));
         } else if (c.isLetter()) {
             QString identifier = getIdentifier().toString();
 
@@ -99,14 +80,14 @@ void Scanner::getOneToken(shared_ptr<QList<Token>> list) {
                     // REM and anything following will be ignored
                     throw DetectREM();
                 } else {
-                    list->push_back(Token(keywords.at(identifier), identifier));
+                    list->push_back(make_shared<Token>(keywords.at(identifier), identifier));
                 }
             } else {
                 // handle identifier
-                list->push_back(Token(TokenType::IDENTIFIER, identifier));
+                list->push_back(make_shared<Token>(TokenType::IDENTIFIER, identifier));
             }
         } else {
-            throw (QString("Unexpected character '") + c + "'");
+            throw (QString("Unexpected character '") + c + "', ignoring this line");
         }
         break;
     }

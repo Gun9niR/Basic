@@ -36,7 +36,7 @@ int Interpreter::getLineNumber(QString& str) {
 
     // check if str starts with a number
     if (!str[0].isDigit()) {
-        throw QString("An instruction must start with a line number, skipping this line");
+        throw QString("An instruction must start with a line number, ignoring this line");
     }
 
     // calculate line number,  string
@@ -51,7 +51,7 @@ int Interpreter::getLineNumber(QString& str) {
     str = str.mid(pos).trimmed();
 
     if (str.isEmpty()) {
-        throw QString("Empty instruction, skipping this line");
+        throw QString("Empty instruction, ignoring this line");
     }
     return lineNumber;
 }
@@ -74,13 +74,34 @@ void Interpreter::handleRawInstruction(QString& str) {
     int codeLineNum = 0;
     try {
         codeLineNum = getLineNumber(str);
-    } catch (QString errMsg) {  // todo: catch exception class
+    } catch (QString errMsg) {
         qDebug() << copy + ": " + errMsg;
         return;
     }
 
-    // add the trimmed instruction to raw instruction map
+    // scan the string
+    shared_ptr<QList<shared_ptr<Token>>> tokenList;
+    try {
+        tokenList = scanner.getTokens(str);
+    } catch (QString errMsg) {
+        qDebug() << QString::number(codeLineNum) + ": " + errMsg;
+        return;
+    }
+
+    // parse the list of tokens
+    shared_ptr<Stmt> stmt;
+    try {
+        stmt = parser.getStmt(tokenList);
+    } catch (QString errMsg) {
+        qDebug() << QString::number(codeLineNum) + ": " + errMsg;
+        return;
+    }
+
+    // add the instruction to three maps
     rawInstruction[codeLineNum] = str;
+    tokens[codeLineNum] = tokenList;
+
+    // display code string and syntax tree
     displayCode();
 }
 
@@ -90,8 +111,6 @@ void Interpreter::reset() {
     tokens.clear();
     stmts.clear();
     environment.reset();
-    scanner.reset();
-    parser.reset();
 
     // close the file
     if (file.isOpen()) {
@@ -141,34 +160,18 @@ void Interpreter::runCommand(CommandType type) {
     }
 }
 
-void Interpreter::runCode() {
-    tokens.clear();
-
-    try {
-        scan();
-    } catch(QString errMsg) {
-        scanner.reset();
-        qDebug() << errMsg;
-    }
-
-    // test scanner output
+void Interpreter::showTokens() {
     for (auto line = tokens.begin(); line != tokens.end(); ++line) {
         auto lineNum = line->first;
         qDebug() << "On line " << lineNum;
         auto list = *(line->second);
         for (auto token = list.begin(); token != list.end(); ++token) {
-            qDebug() << *token;
+            qDebug() << **token;
         }
     }
 }
 
-void Interpreter::scan() {
-    // tokenize
-    scanner = make_shared<Scanner>(rawInstruction, tokens);
-    scanner->getTokens();
-    scanner.reset();
-}
-
 void Interpreter::interpret() {
+    showTokens();
     return;
 }

@@ -60,5 +60,5 @@ void MainWindow::on_console_returnPressed()
 
 void MainWindow::on_runButton_clicked()
 {
-    interpreter.runCode();
+    interpreter.interpret();
 }

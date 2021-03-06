@@ -34,18 +34,19 @@ private:
     map<int, QString> rawInstruction;
 
     // stores tokens
-    map<int, shared_ptr<QList<Token>>> tokens;
+    map<int, shared_ptr<QList<shared_ptr<Token>>>> tokens;
+
+    // stores statements
+    map<int, shared_ptr<Stmt>> stmts;
 
     // environment
     Environment environment;
 
     // tokenizer
-    shared_ptr<Scanner> scanner;
+    Scanner scanner;
 
     // parser
-    shared_ptr<Parser> parser;
-
-
+    Parser parser;
 
 signals:
     void codeAppendRow(QString str);
@@ -66,10 +67,11 @@ public:
     // insert raw instruction from console or file
     void handleRawInstruction(QString& str);
 
-    void runCode();
-    void scan();
-    void parse();
     void interpret();
+
+    // debug functions
+    void showTokens();
+
 private:
     // get line number from a instruction string
     int getLineNumber(QString& str);
