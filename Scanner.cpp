@@ -32,13 +32,11 @@ shared_ptr<QList<Token>> Scanner::getLineToken() {
 
     while (!isAtEnd()) {
         start = current;
-        getOneToken(list);
-    }
-
-
-    // just for test
-    for (auto i = list->begin(); i != list->end(); ++i) {
-        qDebug() << *i;
+        try {
+            getOneToken(list);
+        } catch (DetectREM) {
+            break;
+        }
     }
     return list;
 }
@@ -96,7 +94,13 @@ void Scanner::getOneToken(shared_ptr<QList<Token>> list) {
 
             if (keywords.count(identifier)) {
                 // handle keyword
-                list->push_back(Token(keywords.at(identifier), identifier));
+                TokenType keywordType = keywords.at(identifier);
+                if (keywordType == TokenType::REM) {
+                    // REM and anything following will be ignored
+                    throw DetectREM();
+                } else {
+                    list->push_back(Token(keywords.at(identifier), identifier));
+                }
             } else {
                 // handle identifier
                 list->push_back(Token(TokenType::IDENTIFIER, identifier));

@@ -1,10 +1,6 @@
 #ifndef EXPR_H
 #define EXPR_H
-#include "QString"
-#include <memory>
 #include "consts.h"
-
-using std::shared_ptr;
 
 class Expr {
 public:

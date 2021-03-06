@@ -2,7 +2,15 @@
 #define CONSTS_H
 
 #include <unordered_map>
-#include "qstring.h"
+#include <map>
+#include <memory>
+#include "QString"
+#include "QList"
+
+using std::map;
+using std::unordered_map;
+using std::shared_ptr;
+using std::make_shared;
 
 enum CommandType {
     RUN, LOAD, CLEAR, HELP, QUIT

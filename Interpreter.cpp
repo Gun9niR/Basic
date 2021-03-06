@@ -85,9 +85,15 @@ void Interpreter::handleRawInstruction(QString& str) {
 }
 
 void Interpreter::reset() {
-    // reset all instructions
+    // reset all properties
     rawInstruction.clear();
     tokens.clear();
+    stmts.clear();
+    environment.reset();
+    scanner.reset();
+    parser.reset();
+
+    // close the file
     if (file.isOpen()) {
         file.close();
     }
@@ -135,21 +141,34 @@ void Interpreter::runCommand(CommandType type) {
     }
 }
 
-void Interpreter::interpret() {
+void Interpreter::runCode() {
     tokens.clear();
 
-    // tokenize
     try {
-        scanner = make_shared<Scanner>(rawInstruction, tokens);
-        scanner->getTokens();
-        scanner.reset();
+        scan();
     } catch(QString errMsg) {
+        scanner.reset();
         qDebug() << errMsg;
     }
 
-    // parse into statements
+    // test scanner output
+    for (auto line = tokens.begin(); line != tokens.end(); ++line) {
+        auto lineNum = line->first;
+        qDebug() << "On line " << lineNum;
+        auto list = *(line->second);
+        for (auto token = list.begin(); token != list.end(); ++token) {
+            qDebug() << *token;
+        }
+    }
+}
 
-    // interpret the statements
+void Interpreter::scan() {
+    // tokenize
+    scanner = make_shared<Scanner>(rawInstruction, tokens);
+    scanner->getTokens();
+    scanner.reset();
+}
 
+void Interpreter::interpret() {
     return;
 }

@@ -13,6 +13,10 @@ using std::map;
 
 class Scanner {
 private:
+    // exceptions
+    class DetectREM {};
+
+private:
     const unordered_map<QString, TokenType> keywords {
         {"REM", TokenType::REM},
         {"LET", TokenType::LET},

@@ -1,12 +1,15 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
+
+#include <map>
+#include <QList>
 #include "qfile.h"
 #include "Scanner.h"
 #include "consts.h"
-#include <map>
-#include <QList>
 #include "Token.h"
 #include <memory>
+#include "Parser.h"
+#include "Environment.h"
 
 using std::shared_ptr;
 using std::map;
@@ -33,8 +36,17 @@ private:
     // stores tokens
     map<int, shared_ptr<QList<Token>>> tokens;
 
+    // environment
+    Environment environment;
+
     // tokenizer
     shared_ptr<Scanner> scanner;
+
+    // parser
+    shared_ptr<Parser> parser;
+
+
+
 signals:
     void codeAppendRow(QString str);
 
@@ -54,6 +66,9 @@ public:
     // insert raw instruction from console or file
     void handleRawInstruction(QString& str);
 
+    void runCode();
+    void scan();
+    void parse();
     void interpret();
 private:
     // get line number from a instruction string
