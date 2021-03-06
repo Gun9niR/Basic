@@ -16,4 +16,5 @@ public:
     friend QDebug operator<<(QDebug dbg, const Token & token);
 };
 
+typedef shared_ptr<Token> TokenPtr;
 #endif // TOKEN_H

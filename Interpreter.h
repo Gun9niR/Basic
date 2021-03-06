@@ -27,25 +27,18 @@ private:
         { "QUIT", CommandType::QUIT },
     };
 
-    // stores the opened file
+    // state
     QFile file;
-
-    // stores code as string
-    map<int, QString> rawInstruction;
-
-    // stores tokens
-    map<int, shared_ptr<QList<shared_ptr<Token>>>> tokens;
-
-    // stores statements
-    map<int, shared_ptr<Stmt>> stmts;
-
-    // environment
     Environment environment;
+    int pc;
 
-    // tokenizer
+    // code as string, tokens and statements
+    map<int, QString> rawInstruction;
+    map<int, shared_ptr<QList<TokenPtr>>> tokens;
+    map<int, StmtPtr> stmts;
+
+    // tools
     Scanner scanner;
-
-    // parser
     Parser parser;
 
 signals:

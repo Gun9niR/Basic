@@ -1,18 +1,24 @@
 #ifndef EXPR_H
 #define EXPR_H
+
 #include "consts.h"
+#include "Environment.h"
 
 class Expr {
 public:
-    virtual double evaluate() = 0;
+    virtual double evaluate(Environment &) = 0;
 };
+
+typedef shared_ptr<Expr> ExprPtr;
 
 class ConstantExpr: Expr {
 private:
     double val;
+    bool isNegative;
 
 public:
-    double evaluate() override;
+    ConstantExpr(double v, bool n = false);
+    double evaluate(Environment &) override;
 };
 
 class IdentifierExpr: Expr {
@@ -20,17 +26,18 @@ private:
     QString name;
 
 public:
-    double evaluate() override;
+    IdentifierExpr(QString str);
+    double evaluate(Environment &) override;
 };
 
 class CompoundExpr: Expr {
 private:
     ExprType type;
-    shared_ptr<Expr> left;
-    shared_ptr<Expr> right;
+    ExprPtr left;
+    ExprPtr right;
 
 public:
-    double evaluate() override;
+    CompoundExpr(ExprType t, ExprPtr l, ExprPtr r);
+    double evaluate(Environment &) override;
 };
-
 #endif // EXPR_H

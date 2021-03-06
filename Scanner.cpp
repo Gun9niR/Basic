@@ -4,8 +4,8 @@
 Scanner::Scanner():
     source(), start(0), current(0), length(0) {}
 
-shared_ptr<QList<shared_ptr<Token>>> Scanner::getTokens(QString str) {
-    shared_ptr<QList<shared_ptr<Token>>> list = make_shared<QList<shared_ptr<Token>>>();
+shared_ptr<QList<TokenPtr>> Scanner::getTokens(QString str) {
+    shared_ptr<QList<TokenPtr>> list = make_shared<QList<TokenPtr>>();
     source = &str;
     start = 0;
     current = 0;
@@ -22,7 +22,7 @@ shared_ptr<QList<shared_ptr<Token>>> Scanner::getTokens(QString str) {
     return list;
 }
 
-void Scanner::getOneToken(shared_ptr<QList<shared_ptr<Token>>> list) {
+void Scanner::getOneToken(shared_ptr<QList<TokenPtr>> list) {
     auto c = advance();
 
     switch (c.unicode()) {

@@ -8,22 +8,22 @@
 class Parser {
 private:
     // one line of tokens
-    shared_ptr<QList<shared_ptr<Token>>> source;
+    shared_ptr<QList<TokenPtr>> source;
 
     // pointer to source (iterator)
-    QList<shared_ptr<Token>>::iterator current;
-    QList<shared_ptr<Token>>::iterator end;
+    QList<TokenPtr>::iterator current;
+    QList<TokenPtr>::iterator end;
 
 private:
     bool isAtEnd();
 
-    bool match();
+    bool match(TokenType t);
 
-    shared_ptr<Token> advance();
-
-    shared_ptr<LetStmt> getLetStmt();
+    TokenPtr advance();
 
     shared_ptr<PrintStmt> getPrintStmt();
+
+    shared_ptr<LetStmt> getLetStmt();
 
     shared_ptr<InputStmt> getInputStmt();
 
@@ -33,22 +33,22 @@ private:
 
     shared_ptr<EndStmt> getEndStmt();
 
-    shared_ptr<Expr> expression();
+    ExprPtr expression();
 
-    shared_ptr<Expr> addition();
+    ExprPtr addition();
 
-    shared_ptr<Expr> mult();
+    ExprPtr mult();
 
-    shared_ptr<Expr> pow();
+    ExprPtr pow();
 
-    shared_ptr<Expr> unary();
+    ExprPtr unary();
 
-    shared_ptr<Expr> number();
+    ExprPtr primary();
 
 public:
     Parser();
 
-    shared_ptr<Stmt> getStmt(shared_ptr<QList<shared_ptr<Token>>> tokens);
+    StmtPtr getStmt(shared_ptr<QList<TokenPtr>> tokens);
 };
 
 #endif // PARSER_H

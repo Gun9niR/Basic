@@ -1,5 +1,9 @@
 #include "Environment.h"
 
+Environment::Environment() {
+    symbolTable.clear();
+}
+
 void Environment::set(QString name, double value) {
     symbolTable[name] = value;
 }

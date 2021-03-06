@@ -39,7 +39,7 @@ private:
     int length;
 
 private:
-    void getOneToken(shared_ptr<QList<shared_ptr<Token>>> list);
+    void getOneToken(shared_ptr<QList<TokenPtr>> list);
 
     bool isAtEnd();
 
@@ -54,7 +54,7 @@ private:
 public:
     Scanner();
 
-    shared_ptr<QList<shared_ptr<Token>>> getTokens(QString str);
+    shared_ptr<QList<TokenPtr>> getTokens(QString str);
 };
 
 #endif // SCANNER_H

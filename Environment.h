@@ -10,6 +10,7 @@ public:
     void reset();
 
 private:
+    Environment();
     map<QString, double> symbolTable;
 };
 

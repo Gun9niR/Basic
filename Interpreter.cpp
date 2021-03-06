@@ -3,7 +3,7 @@
 #include "utils.h"
 #include "qapplication.h"
 
-Interpreter::Interpreter() {
+Interpreter::Interpreter(): pc(0) {
 }
 
 void Interpreter::loadFile(QString fileName) {
@@ -60,6 +60,7 @@ void Interpreter::handleRawInstruction(QString& str) {
     if (str.isEmpty()) {
         return;
     }
+
     // save a copy of str
     QString copy = str;
 
@@ -80,7 +81,7 @@ void Interpreter::handleRawInstruction(QString& str) {
     }
 
     // scan the string
-    shared_ptr<QList<shared_ptr<Token>>> tokenList;
+    shared_ptr<QList<TokenPtr>> tokenList;
     try {
         tokenList = scanner.getTokens(str);
     } catch (QString errMsg) {
@@ -89,7 +90,7 @@ void Interpreter::handleRawInstruction(QString& str) {
     }
 
     // parse the list of tokens
-    shared_ptr<Stmt> stmt;
+    StmtPtr stmt;
     try {
         stmt = parser.getStmt(tokenList);
     } catch (QString errMsg) {
@@ -124,6 +125,10 @@ void Interpreter::displayCode() {
     // clear codeDisplay first
     // align the code number
     emit clearDisplays();
+
+    if (rawInstruction.empty()) {
+        return;
+    }
 
     int maxLineNum = rawInstruction.rbegin()->first;
     int maxDigits = getDigits(maxLineNum);

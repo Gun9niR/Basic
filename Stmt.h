@@ -10,32 +10,34 @@ public:
     virtual void execute(Environment &) = 0;
 };
 
-class LetStmt: Stmt {
+typedef shared_ptr<Stmt> StmtPtr;
+
+class LetStmt: public Stmt {
 private:
-    shared_ptr<Token> name;
-    shared_ptr<Expr> initializer;
+    TokenPtr name;
+    ExprPtr initializer;
 
 public:
     void execute(Environment &) override;
 };
 
-class PrintStmt: Stmt {
+class PrintStmt: public Stmt {
 private:
-    shared_ptr<Expr> expr;
+    ExprPtr expr;
 
 public:
     void execute(Environment &) override;
 };
 
-class InputStmt: Stmt {
+class InputStmt: public Stmt {
 private:
-    shared_ptr<Token> name;
+    TokenPtr name;
 
 public:
     void execute(Environment &) override;
 };
 
-class GotoStmt: Stmt {
+class GotoStmt: public Stmt {
 private:
     int lineNum;
 
@@ -43,18 +45,18 @@ public:
     void execute(Environment &) override;
 };
 
-class IfStmt: Stmt {
+class IfStmt: public Stmt {
 private:
-    shared_ptr<Token> op;
-    shared_ptr<Expr> expr1;
-    shared_ptr<Expr> expr2;
+    TokenPtr op;
+    ExprPtr expr1;
+    ExprPtr expr2;
     int lineNum;
 
 public:
     void execute(Environment &) override;
 };
 
-class EndStmt: Stmt {
+class EndStmt: public Stmt {
 public:
     void execute(Environment &) override;
 };

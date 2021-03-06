@@ -21,6 +21,7 @@ SOURCES += \
     Interpreter.cpp \
     Parser.cpp \
     Scanner.cpp \
+    Stmt.cpp \
     Token.cpp \
     main.cpp \
     mainwindow.cpp
