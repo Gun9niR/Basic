@@ -3,33 +3,91 @@
 Parser::Parser(): source(), current(), end() {}
 
 shared_ptr<LetStmt> Parser::getLetStmt() {
-    shared_ptr<LetStmt> stmt = make_shared<LetStmt>();
-    return stmt;
+    TokenPtr name;
+
+    // get the identifier
+    if (match(TokenType::IDENTIFIER)) {
+        name = advance();
+    } else {
+        error("Expect variable name");
+    }
+
+    // get '='
+    consume(TokenType::EQUAL, "Expect assignment symbol '='");
+
+    // get expression
+    ExprPtr initializer = expression();
+
+    checkEnd();
+
+    return make_shared<LetStmt>(name, initializer);
 }
 
 shared_ptr<PrintStmt> Parser::getPrintStmt() {
-    shared_ptr<PrintStmt> stmt = make_shared<PrintStmt>();
-    return stmt;
+    ExprPtr expr = expression();
+
+    checkEnd();
+
+    return make_shared<PrintStmt>(expr);
 }
 
 shared_ptr<InputStmt> Parser::getInputStmt() {
-    shared_ptr<InputStmt> stmt = make_shared<InputStmt>();
-    return stmt;
+    TokenPtr name;
+
+    if (match(TokenType::IDENTIFIER)) {
+        name = advance();
+    } else {
+        error("Expect variable name");
+    }
+
+    checkEnd();
+
+    return make_shared<InputStmt>(name);
 }
 
 shared_ptr<GotoStmt> Parser::getGotoStmt() {
-    shared_ptr<GotoStmt> stmt = make_shared<GotoStmt>();
-    return stmt;
+    int lineNum;
+    if (match(TokenType::NUMBER)) {
+        lineNum = static_cast<int>(advance()->value);
+    } else {
+        error("Expect line number");
+    }
+
+    checkEnd();
+
+    return make_shared<GotoStmt>(lineNum);
 }
 
 shared_ptr<IfStmt> Parser::getIfStmt() {
-    shared_ptr<IfStmt> stmt = make_shared<IfStmt>();
-    return stmt;
+    TokenPtr op;
+    ExprPtr expr1;
+    ExprPtr expr2;
+    int lineNum;
+
+    expr1 = expression();
+
+    if (match({TokenType::LESS, TokenType::GREATER, TokenType::EQUAL})) {
+        op = advance();
+    } else {
+        error("Expect comparator in if condition");
+    }
+
+    expr2 = expression();
+
+    consume(TokenType::THEN, "IF requires a THEN");
+
+    if (match(TokenType::NUMBER)) {
+        lineNum = static_cast<int>(advance()->value);
+    }
+
+    checkEnd();
+
+    return make_shared<IfStmt>(op, expr1, expr2, lineNum);
 }
 
 shared_ptr<EndStmt> Parser::getEndStmt() {
-    shared_ptr<EndStmt> stmt = make_shared<EndStmt>();
-    return stmt;
+    checkEnd();
+    return make_shared<EndStmt>();
 }
 
 ExprPtr Parser::expression() {
@@ -54,6 +112,27 @@ ExprPtr Parser::unary() {
 
 shared_ptr<Expr> Parser::primary() {
 
+}
+
+bool Parser::match(TokenType type) {
+    if (isAtEnd()) {
+        return false;
+    }
+    return type == (*current)->type;
+}
+
+bool Parser::match(vector<TokenType> types) {
+    if (isAtEnd()) {
+        return false;
+    }
+    TokenType currentType = (*current)->type;
+    for (auto type: types) {
+        if (type == currentType) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 StmtPtr Parser::getStmt(shared_ptr<QList<TokenPtr>> tokens) {
@@ -97,4 +176,26 @@ bool Parser::isAtEnd() {
 TokenPtr Parser::advance() {
     ++current;
     return *(current - 1);
+}
+
+void Parser::error(QString errMsg) {
+    throw QString(errMsg);
+}
+
+void Parser::consume(TokenType type, QString errMsg) {
+    if (match(type)) {
+        ++current;
+    } else {
+        throw errMsg;
+    }
+}
+
+void Parser::checkEnd() {
+    if (!isAtEnd()) {
+        QString errMsg = "Excessive symbols at the end of the line: ";
+        while (!isAtEnd()) {
+            errMsg += advance()->lexeme;
+        }
+        throw errMsg;
+    }
 }

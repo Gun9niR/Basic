@@ -17,8 +17,10 @@ private:
 private:
     bool isAtEnd();
 
-    bool match(TokenType t);
-
+    // check if current->type matches
+    bool match(vector<TokenType>);
+    bool match(TokenType);
+    void consume(TokenType, QString);
     TokenPtr advance();
 
     shared_ptr<PrintStmt> getPrintStmt();
@@ -44,6 +46,10 @@ private:
     ExprPtr unary();
 
     ExprPtr primary();
+
+    void error(QString errMsg);
+
+    void checkEnd();
 
 public:
     Parser();

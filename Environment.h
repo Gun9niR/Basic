@@ -8,9 +8,9 @@ public:
     double get(QString name);
     bool isDefined(QString name);
     void reset();
+    Environment();
 
 private:
-    Environment();
     map<QString, double> symbolTable;
 };
 

@@ -18,6 +18,7 @@ private:
     ExprPtr initializer;
 
 public:
+    LetStmt(TokenPtr, ExprPtr);
     void execute(Environment &) override;
 };
 
@@ -26,6 +27,7 @@ private:
     ExprPtr expr;
 
 public:
+    PrintStmt(ExprPtr);
     void execute(Environment &) override;
 };
 
@@ -34,6 +36,7 @@ private:
     TokenPtr name;
 
 public:
+    InputStmt(TokenPtr name);
     void execute(Environment &) override;
 };
 
@@ -42,6 +45,7 @@ private:
     int lineNum;
 
 public:
+    GotoStmt(int lineNum);
     void execute(Environment &) override;
 };
 
@@ -53,11 +57,13 @@ private:
     int lineNum;
 
 public:
+    IfStmt(TokenPtr, ExprPtr, ExprPtr, int);
     void execute(Environment &) override;
 };
 
 class EndStmt: public Stmt {
 public:
+    EndStmt();
     void execute(Environment &) override;
 };
 

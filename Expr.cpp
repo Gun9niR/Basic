@@ -5,8 +5,10 @@ double ConstantExpr::evaluate(Environment& environment) {
 }
 
 double IdentifierExpr::evaluate(Environment& environment) {
-    if (environment.)
-    return 0;
+    if (environment.isDefined(name)) {
+        throw QString("No such variable: " + name);
+    }
+    return environment.get(name);
 }
 
 double CompoundExpr::evaluate(Environment& environment) {
@@ -20,7 +22,7 @@ double CompoundExpr::evaluate(Environment& environment) {
     case ExprType::DIV:
         return left->evaluate(environment) / right->evaluate(environment);
     case ExprType::POW:
-        return left->evaluate(environment)
+        return pow(left->evaluate(environment), right->evaluate(environment));
     }
 }
 
@@ -29,4 +31,3 @@ ConstantExpr::ConstantExpr(double v, bool n): val(v), isNegative(n) {}
 IdentifierExpr::IdentifierExpr(QString str): name(str) {}
 
 CompoundExpr::CompoundExpr(ExprType t, ExprPtr l, ExprPtr r): type(t), left(l), right(r) {}
-

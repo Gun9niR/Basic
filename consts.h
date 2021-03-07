@@ -6,7 +6,10 @@
 #include <memory>
 #include "QString"
 #include "QList"
+#include <cmath>
+#include <vector>
 
+using std::vector;
 using std::map;
 using std::unordered_map;
 using std::shared_ptr;
