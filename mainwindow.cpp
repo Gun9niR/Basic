@@ -3,10 +3,10 @@
 #include "qfiledialog.h"
 #include "qmessagebox.h"
 #include <memory>
-#include "Interpreter.h"
+#include "Basic.h"
 #include "qdebug.h"
 
-extern Interpreter interpreter;
+extern Basic basic;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -26,7 +26,7 @@ void MainWindow::on_loadButton_clicked()
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open file"), "./", tr("Basic programs (*.basic)"));
 
-    interpreter.loadFile(fileName);
+    basic.loadFile(fileName);
 }
 
 void MainWindow::codeAppendRow(QString str) {
@@ -35,7 +35,7 @@ void MainWindow::codeAppendRow(QString str) {
 
 void MainWindow::on_clearButton_clicked()
 {
-    interpreter.reset();
+    basic.reset();
     clearDisplays();
 }
 
@@ -55,10 +55,10 @@ void MainWindow::on_console_returnPressed()
     QString str = ui->console->text().trimmed();
     ui->console->clear();
 
-    interpreter.handleRawInstruction(str);
+    basic.handleRawInstruction(str);
 }
 
 void MainWindow::on_runButton_clicked()
 {
-    interpreter.interpret();
+    basic.showTokens();
 }

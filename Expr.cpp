@@ -13,15 +13,15 @@ double IdentifierExpr::evaluate(Environment& environment) {
 
 double CompoundExpr::evaluate(Environment& environment) {
     switch(type) {
-    case ExprType::ADD:
+    case TokenType::PLUS:
         return left->evaluate(environment) + right->evaluate(environment);
-    case ExprType::SUB:
+    case TokenType::MINUS:
         return left->evaluate(environment) - right->evaluate(environment);
-    case ExprType::MULT:
+    case TokenType::STAR:
         return left->evaluate(environment) * right->evaluate(environment);
-    case ExprType::DIV:
+    case TokenType::SLASH:
         return left->evaluate(environment) / right->evaluate(environment);
-    case ExprType::POW:
+    case TokenType::POWER:
         return pow(left->evaluate(environment), right->evaluate(environment));
     }
 }
@@ -30,4 +30,4 @@ ConstantExpr::ConstantExpr(double v, bool n): val(v), isNegative(n) {}
 
 IdentifierExpr::IdentifierExpr(QString str): name(str) {}
 
-CompoundExpr::CompoundExpr(ExprType t, ExprPtr l, ExprPtr r): type(t), left(l), right(r) {}
+CompoundExpr::CompoundExpr(TokenType t, ExprPtr l, ExprPtr r): type(t), left(l), right(r) {}

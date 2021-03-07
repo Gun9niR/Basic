@@ -8,6 +8,8 @@
 #include "QList"
 #include <cmath>
 #include <vector>
+#include "qfile.h"
+#include "QApplication"
 
 using std::vector;
 using std::map;
@@ -17,11 +19,6 @@ using std::make_shared;
 
 enum CommandType {
     RUN, LOAD, CLEAR, HELP, QUIT
-};
-
-
-enum ExprType {
-    ADD, SUB, MULT, DIV, POW
 };
 
 enum TokenType {

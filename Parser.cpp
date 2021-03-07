@@ -69,7 +69,7 @@ shared_ptr<IfStmt> Parser::getIfStmt() {
     if (match({TokenType::LESS, TokenType::GREATER, TokenType::EQUAL})) {
         op = advance();
     } else {
-        error("Expect comparator in if condition");
+        error("Expect comparator in IF condition");
     }
 
     expr2 = expression();
@@ -91,27 +91,70 @@ shared_ptr<EndStmt> Parser::getEndStmt() {
 }
 
 ExprPtr Parser::expression() {
-
+    // just a wrapper for testing
+    ExprPtr expr = addition();
+    Environment e;
+    qDebug() << expr->evaluate(e);
+    return expr;
 }
 
 ExprPtr Parser::addition() {
+    ExprPtr expr = mult();
 
+    while (match({TokenType::PLUS, TokenType::MINUS})) {
+        TokenType op = advance()->type;
+        ExprPtr right = mult();
+        expr = make_shared<CompoundExpr>(op, expr, right);
+    }
+
+    return expr;
 }
 
 ExprPtr Parser::mult() {
+    ExprPtr expr = pow();
 
+    while (match({TokenType::STAR, TokenType::SLASH})) {
+        TokenType op = advance()->type;
+        ExprPtr right = pow();
+        expr = make_shared<CompoundExpr>(op, expr, right);
+    }
+
+    return expr;
 }
 
 ExprPtr Parser::pow() {
 
+    ExprPtr expr = unary();
+
+    if (match(TokenType::POWER)) {
+        TokenType op = advance()->type;
+        ExprPtr right = pow();
+        expr = make_shared<CompoundExpr>(op, expr, right);
+    }
+
+    return expr;
 }
 
 ExprPtr Parser::unary() {
-
+    // to be modified
+    return primary();
 }
 
 shared_ptr<Expr> Parser::primary() {
+    if (match(TokenType::NUMBER)) {
+        return make_shared<ConstantExpr>(advance()->value);
+    }
+    if (match(TokenType::IDENTIFIER)) {
+        return make_shared<IdentifierExpr>(advance()->lexeme);
+    }
+    if (match(TokenType::LEFT_PAREN)) {
+        advance();
+        ExprPtr expr = expression();
+        consume(TokenType::RIGHT_PAREN, "Expect ) after expression");
+        return expr;
+    }
 
+    throw QString("Expect expression");
 }
 
 bool Parser::match(TokenType type) {

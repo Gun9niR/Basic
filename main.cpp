@@ -3,9 +3,9 @@
 
 #include <QApplication>
 #include <memory>
+#include "Basic.h"
 
-// declare interpreter gloabally so that mainwindow can access its member functions
-Interpreter interpreter;
+Basic basic;
 
 int main(int argc, char *argv[])
 {
@@ -13,14 +13,13 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     // connect signals
-    QObject::connect(&interpreter, &Interpreter::codeAppendRow,
+    QObject::connect(&basic, &Basic::codeAppendRow,
                      &w, &MainWindow::codeAppendRow);
-    QObject::connect(&interpreter, &Interpreter::clickClearButton,
+    QObject::connect(&basic, &Basic::clickClearButton,
                      &w, &MainWindow::clickClearButton);
-    QObject::connect(&interpreter, &Interpreter::clearDisplays,
+    QObject::connect(&basic, &Basic::clearDisplays,
                      &w, &MainWindow::clearDisplays);
 
-    // start application
     w.show();
     return a.exec();
 }

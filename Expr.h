@@ -11,7 +11,7 @@ public:
 
 typedef shared_ptr<Expr> ExprPtr;
 
-class ConstantExpr: Expr {
+class ConstantExpr: public Expr {
 private:
     double val;
     bool isNegative;
@@ -21,7 +21,7 @@ public:
     double evaluate(Environment &) override;
 };
 
-class IdentifierExpr: Expr {
+class IdentifierExpr: public Expr {
 private:
     QString name;
 
@@ -30,14 +30,14 @@ public:
     double evaluate(Environment &) override;
 };
 
-class CompoundExpr: Expr {
+class CompoundExpr: public Expr {
 private:
-    ExprType type;
+    TokenType type;
     ExprPtr left;
     ExprPtr right;
 
 public:
-    CompoundExpr(ExprType t, ExprPtr l, ExprPtr r);
+    CompoundExpr(TokenType t, ExprPtr l, ExprPtr r);
     double evaluate(Environment &) override;
 };
 #endif // EXPR_H
