@@ -1,7 +1,7 @@
 #include "Expr.h"
 
 double ConstantExpr::evaluate(Environment& environment) {
-    return isNegative ? -val : val;
+    return val;
 }
 
 double IdentifierExpr::evaluate(Environment& environment) {
@@ -16,6 +16,9 @@ double CompoundExpr::evaluate(Environment& environment) {
     case TokenType::PLUS:
         return left->evaluate(environment) + right->evaluate(environment);
     case TokenType::MINUS:
+        if (left == nullptr) {
+            return -right->evaluate(environment);
+        }
         return left->evaluate(environment) - right->evaluate(environment);
     case TokenType::STAR:
         return left->evaluate(environment) * right->evaluate(environment);
@@ -23,10 +26,12 @@ double CompoundExpr::evaluate(Environment& environment) {
         return left->evaluate(environment) / right->evaluate(environment);
     case TokenType::POWER:
         return pow(left->evaluate(environment), right->evaluate(environment));
+    default:
+        throw QString("Parsing error");
     }
 }
 
-ConstantExpr::ConstantExpr(double v, bool n): val(v), isNegative(n) {}
+ConstantExpr::ConstantExpr(double v): val(v) {}
 
 IdentifierExpr::IdentifierExpr(QString str): name(str) {}
 

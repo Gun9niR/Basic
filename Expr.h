@@ -14,10 +14,9 @@ typedef shared_ptr<Expr> ExprPtr;
 class ConstantExpr: public Expr {
 private:
     double val;
-    bool isNegative;
 
 public:
-    ConstantExpr(double v, bool n = false);
+    ConstantExpr(double v);
     double evaluate(Environment &) override;
 };
 
@@ -32,6 +31,7 @@ public:
 
 class CompoundExpr: public Expr {
 private:
+    // type MINUS and nullptr on left means negative
     TokenType type;
     ExprPtr left;
     ExprPtr right;

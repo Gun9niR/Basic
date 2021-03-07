@@ -123,7 +123,6 @@ ExprPtr Parser::mult() {
 }
 
 ExprPtr Parser::pow() {
-
     ExprPtr expr = unary();
 
     if (match(TokenType::POWER)) {
@@ -136,7 +135,11 @@ ExprPtr Parser::pow() {
 }
 
 ExprPtr Parser::unary() {
-    // to be modified
+    if (match(TokenType::MINUS)) {
+        TokenType op = advance()->type;
+        ExprPtr right = unary();
+        return make_shared<CompoundExpr>(op, nullptr, right);
+    }
     return primary();
 }
 
