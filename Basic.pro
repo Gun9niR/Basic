@@ -48,3 +48,8 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    programs/fibonacci.basic \
+    programs/test.basic \
+    programs/test_scan.basic
