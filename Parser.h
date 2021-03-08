@@ -23,6 +23,8 @@ private:
     void consume(TokenType, QString);
     TokenPtr advance();
 
+    shared_ptr<RemStmt> getRemStmt();
+
     shared_ptr<PrintStmt> getPrintStmt();
 
     shared_ptr<LetStmt> getLetStmt();

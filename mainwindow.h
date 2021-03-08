@@ -12,9 +12,14 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public:
+private:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+public:
+    MainWindow(MainWindow &other) = delete;
+    void operator=(const MainWindow &) = delete;
+    static MainWindow& getInstance();
 
 private slots:
     void on_loadButton_clicked();
@@ -28,9 +33,14 @@ private slots:
 public slots:
     void codeAppendRow(QString str);
 
+    void statementAppendRow(QString str);
+
+    void resultAppendRow(QString str);
+
     void clickClearButton();
 
     void clearDisplays();
+
 private:
     Ui::MainWindow *ui;
 };

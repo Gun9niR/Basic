@@ -1,70 +1,97 @@
 #ifndef STMT_H
 #define STMT_H
 
+#include "consts.h"
 #include "Environment.h"
 #include "Token.h"
 #include "Expr.h"
 
-class Stmt {
+class Stmt: public QObject {
+    Q_OBJECT
+
 public:
     virtual void execute(Environment &) = 0;
+    virtual void visualize(int) = 0;
+
+signals:
+    void statementAppendRow(QString str);
 };
 
 typedef shared_ptr<Stmt> StmtPtr;
 
+class RemStmt: public Stmt {
+private:
+    const TokenPtr comment;
+
+public:
+    RemStmt(TokenPtr);
+    void execute(Environment &) override;
+    void visualize(int) override;
+};
+
 class LetStmt: public Stmt {
 private:
-    TokenPtr name;
-    ExprPtr initializer;
+    const TokenPtr name;
+    const ExprPtr initializer;
 
 public:
     LetStmt(TokenPtr, ExprPtr);
     void execute(Environment &) override;
+    void visualize(int) override;
 };
 
 class PrintStmt: public Stmt {
+    Q_OBJECT
 private:
-    ExprPtr expr;
+    const ExprPtr expr;
 
 public:
     PrintStmt(ExprPtr);
     void execute(Environment &) override;
+    void visualize(int) override;
+
+signals:
+    void resultAppendRow(QString);
 };
 
 class InputStmt: public Stmt {
 private:
-    TokenPtr name;
+    const TokenPtr name;
 
 public:
     InputStmt(TokenPtr name);
     void execute(Environment &) override;
+    void visualize(int) override;
 };
 
 class GotoStmt: public Stmt {
 private:
-    int lineNum;
+    const int lineNum;
 
 public:
     GotoStmt(int lineNum);
     void execute(Environment &) override;
+    void visualize(int lineNum) override;
 };
 
 class IfStmt: public Stmt {
 private:
-    TokenPtr op;
-    ExprPtr expr1;
-    ExprPtr expr2;
-    int lineNum;
+    const TokenPtr op;
+    const ExprPtr expr1;
+    const ExprPtr expr2;
+    const int lineNum;
 
 public:
     IfStmt(TokenPtr, ExprPtr, ExprPtr, int);
     void execute(Environment &) override;
+    void visualize(int) override;
 };
 
 class EndStmt: public Stmt {
 public:
     EndStmt();
     void execute(Environment &) override;
+    void visualize(int) override;
 };
 
 #endif // STMT_H

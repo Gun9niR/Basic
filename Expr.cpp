@@ -1,38 +1,95 @@
 #include "Expr.h"
+#include "mainwindow.h"
+#include "Exception.h"
+
+ConstantExpr::ConstantExpr(double v): val(v) {
+    connect(this, &ConstantExpr::statementAppendRow, &MainWindow::getInstance(), &MainWindow::statementAppendRow);
+}
+
+IdentifierExpr::IdentifierExpr(QString str): name(str) {
+    connect(this, &IdentifierExpr::statementAppendRow, &MainWindow::getInstance(), &MainWindow::statementAppendRow);
+}
+
+CompoundExpr::CompoundExpr(TokenPtr t, ExprPtr l, ExprPtr r): op(t), left(l), right(r) {
+    connect(this, &CompoundExpr::statementAppendRow, &MainWindow::getInstance(), &MainWindow::statementAppendRow);
+}
 
 double ConstantExpr::evaluate(Environment& environment) {
     return val;
 }
 
+void ConstantExpr::visualize(int indents) {
+    QString strToAppend = "";
+
+    // appendTabs
+    for (int i = 0; i < indents; ++i) {
+        strToAppend += "\t";
+    }
+
+    // append number
+    strToAppend += QString::number(val);
+
+
+    emit statementAppendRow(strToAppend);
+}
+
 double IdentifierExpr::evaluate(Environment& environment) {
-    if (environment.isDefined(name)) {
-        throw QString("No such variable: " + name);
+    if (!environment.isDefined(name)) {
+        throw NoSuchVariable(name);
     }
     return environment.get(name);
 }
 
+void IdentifierExpr::visualize(int indents) {
+    QString strToAppend = "";
+
+    // appendTabs
+    for (int i = 0; i < indents; ++i) {
+        strToAppend += "\t";
+    }
+
+    // append identifier
+    strToAppend += name;
+
+    emit statementAppendRow(strToAppend);
+}
+
 double CompoundExpr::evaluate(Environment& environment) {
-    switch(type) {
+    double valLeft = left ? left->evaluate(environment) : 0;
+    double valRight = right->evaluate(environment);
+    switch(op->type) {
     case TokenType::PLUS:
-        return left->evaluate(environment) + right->evaluate(environment);
+        return valLeft + valRight;
     case TokenType::MINUS:
-        if (left == nullptr) {
-            return -right->evaluate(environment);
-        }
-        return left->evaluate(environment) - right->evaluate(environment);
+        return valLeft - valRight;
     case TokenType::STAR:
-        return left->evaluate(environment) * right->evaluate(environment);
+        return valLeft * valRight;
     case TokenType::SLASH:
-        return left->evaluate(environment) / right->evaluate(environment);
+        if (!valRight) {
+            throw DivisionByZero();
+        }
+        return valLeft / valRight;
     case TokenType::POWER:
-        return pow(left->evaluate(environment), right->evaluate(environment));
+        return pow(valLeft, valRight);
     default:
         throw QString("Parsing error");
     }
 }
 
-ConstantExpr::ConstantExpr(double v): val(v) {}
+void CompoundExpr::visualize(int indents) {
+    QString strToAppend = "";
 
-IdentifierExpr::IdentifierExpr(QString str): name(str) {}
+    // appendTabs
+    for (int i = 0; i < indents; ++i) {
+        strToAppend += "\t";
+    }
 
-CompoundExpr::CompoundExpr(TokenType t, ExprPtr l, ExprPtr r): type(t), left(l), right(r) {}
+    // append identifier
+    strToAppend += op->lexeme;
+    emit statementAppendRow(strToAppend);
+
+    if (left != nullptr) {
+        left->visualize(indents + 1);
+    }
+    right->visualize(indents + 1);
+}

@@ -67,6 +67,9 @@ QDebug operator<<(QDebug dbg, const Token & token) {
         case END:
             typeName = "END";
             break;
+        case COMMENT:
+            typeName = "COMMENT";
+            break;
     }
     QString msg = "Type name: " + typeName + ", Lexeme: " + token.lexeme;
     if (token.type == TokenType::NUMBER) {

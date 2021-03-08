@@ -33,7 +33,10 @@ enum TokenType {
     IDENTIFIER, NUMBER,
 
     // keyword
-    REM, LET, PRINT, INPUT, GOTO, IF, THEN, END
+    REM, LET, PRINT, INPUT, GOTO, IF, THEN, END,
+
+    // comment
+    COMMENT
 };
 
 #endif // CONSTS_H

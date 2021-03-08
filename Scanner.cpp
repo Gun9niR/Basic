@@ -16,6 +16,8 @@ shared_ptr<QList<TokenPtr>> Scanner::getTokens(QString str) {
         try {
             getOneToken(list);
         } catch (DetectREM) {
+            QString comment = str.mid(current).trimmed();
+            list->push_back(make_shared<Token>(TokenType::COMMENT, comment));
             break;
         }
     }
@@ -78,6 +80,7 @@ void Scanner::getOneToken(shared_ptr<QList<TokenPtr>> list) {
                 TokenType keywordType = keywords.at(identifier);
                 if (keywordType == TokenType::REM) {
                     // REM and anything following will be ignored
+                    list->push_back(make_shared<Token>(keywords.at(identifier), identifier));
                     throw DetectREM();
                 } else {
                     list->push_back(make_shared<Token>(keywords.at(identifier), identifier));

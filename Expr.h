@@ -3,41 +3,50 @@
 
 #include "consts.h"
 #include "Environment.h"
+#include "Token.h"
 
-class Expr {
+class Expr: public QObject {
+    Q_OBJECT
 public:
     virtual double evaluate(Environment &) = 0;
+    virtual void visualize(int) = 0;
+
+signals:
+    void statementAppendRow(QString str);
 };
 
 typedef shared_ptr<Expr> ExprPtr;
 
 class ConstantExpr: public Expr {
 private:
-    double val;
+    const double val;
 
 public:
     ConstantExpr(double v);
     double evaluate(Environment &) override;
+    void visualize(int) override;
 };
 
 class IdentifierExpr: public Expr {
 private:
-    QString name;
+    const QString name;
 
 public:
     IdentifierExpr(QString str);
     double evaluate(Environment &) override;
+    void visualize(int) override;
 };
 
 class CompoundExpr: public Expr {
 private:
     // type MINUS and nullptr on left means negative
-    TokenType type;
-    ExprPtr left;
-    ExprPtr right;
+    const TokenPtr op;
+    const ExprPtr left;
+    const ExprPtr right;
 
 public:
-    CompoundExpr(TokenType t, ExprPtr l, ExprPtr r);
+    CompoundExpr(TokenPtr t, ExprPtr l, ExprPtr r);
     double evaluate(Environment &) override;
+    void visualize(int) override;
 };
 #endif // EXPR_H

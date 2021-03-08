@@ -33,6 +33,9 @@ private:
     Scanner scanner;
     Parser parser;
 
+    Basic();
+    ~Basic();
+
 signals:
     void codeAppendRow(QString str);
 
@@ -41,6 +44,9 @@ signals:
     void clearDisplays();
 
 public:
+    // singleton pattern
+    static Basic& getInstance();
+
     // load code from a file
     void loadFile(QString fileName);
 
@@ -50,6 +56,7 @@ public:
     // insert raw instruction from console or file
     void handleRawInstruction(QString& str);
 
+    // instantiate interpreter and interpret
     void interpret();
 
     // debug functions
@@ -59,8 +66,14 @@ private:
     // get line number from a instruction string
     int getLineNumber(QString& str);
 
-    // display code in codeAppendRow in the text browser
+    // display code and syntax tree
+    void display();
+
+    // display code with codeAppendRow in the text browser
     void displayCode();
+
+    // display syxtax tree with codeAppendRow in the text browser
+    void displaySyntaxTree();
 
     // check if a string is a command
     bool matchCommand(QString& str);

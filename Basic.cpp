@@ -1,7 +1,16 @@
 #include "Basic.h"
 
+Basic::~Basic() { }
+
+Basic::Basic() { }
+
+Basic& Basic::getInstance() {
+    static Basic basic;
+    return basic;
+}
+
 void Basic::interpret() {
-    interpreter = make_shared<Interpreter>();
+    interpreter = make_shared<Interpreter>(stmts);
     interpreter->interpret();
 }
 
@@ -65,7 +74,7 @@ void Basic::handleRawInstruction(QString& str) {
 
     // check if str is a command
     if (matchCommand(str)) {
-        displayCode();
+        display();
         runCommand(COMMANDS.find(str)->second);
         return;
     }
@@ -103,7 +112,7 @@ void Basic::handleRawInstruction(QString& str) {
     stmts[codeLineNum] = stmt;
 
     // display code string and syntax tree
-    displayCode();
+    display();
 }
 
 void Basic::reset() {
@@ -123,8 +132,6 @@ void Basic::reset() {
 void Basic::displayCode() {
     // clear codeDisplay first
     // align the code number
-    emit clearDisplays();
-
     if (rawInstruction.empty()) {
         return;
     }
@@ -184,4 +191,16 @@ int Basic::getDigits(int x) {
     }
 
     return ret;
+}
+
+void Basic::display() {
+    emit clearDisplays();
+    displaySyntaxTree();
+    displayCode();
+}
+
+void Basic::displaySyntaxTree() {
+    for (auto iterator: stmts) {
+        iterator.second->visualize(iterator.first);
+    }
 }

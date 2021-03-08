@@ -4,16 +4,18 @@
 #include "consts.h"
 #include "Token.h"
 #include "Environment.h"
+#include "Stmt.h"
 
 class Interpreter: public QObject {
     Q_OBJECT
 
 private:
     Environment environment;
-    int pc;
+    map<int, StmtPtr>& stmts;
+    map<int, StmtPtr>::iterator pc;
 
 public:
-    Interpreter();
+    Interpreter(map<int, StmtPtr>&);
 
     void interpret();
 };

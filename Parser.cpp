@@ -2,6 +2,20 @@
 
 Parser::Parser(): source(), current(), end() {}
 
+shared_ptr<RemStmt> Parser::getRemStmt() {
+    TokenPtr comment;
+
+    if (match(TokenType::COMMENT)) {
+        comment = advance();
+    } else {
+        error("Unknown comment error");
+    }
+
+    checkEnd();
+
+    return make_shared<RemStmt>(comment);
+}
+
 shared_ptr<LetStmt> Parser::getLetStmt() {
     TokenPtr name;
 
@@ -92,17 +106,18 @@ shared_ptr<EndStmt> Parser::getEndStmt() {
 
 ExprPtr Parser::expression() {
     // just a wrapper for testing
-    ExprPtr expr = addition();
-    Environment e;
-    qDebug() << expr->evaluate(e);
-    return expr;
+//    ExprPtr expr = addition();
+//    Environment e;
+//    qDebug() << expr->evaluate(e);
+//    return expr;
+    return addition();
 }
 
 ExprPtr Parser::addition() {
     ExprPtr expr = mult();
 
     while (match({TokenType::PLUS, TokenType::MINUS})) {
-        TokenType op = advance()->type;
+        TokenPtr op = advance();
         ExprPtr right = mult();
         expr = make_shared<CompoundExpr>(op, expr, right);
     }
@@ -114,7 +129,7 @@ ExprPtr Parser::mult() {
     ExprPtr expr = pow();
 
     while (match({TokenType::STAR, TokenType::SLASH})) {
-        TokenType op = advance()->type;
+        TokenPtr op = advance();
         ExprPtr right = pow();
         expr = make_shared<CompoundExpr>(op, expr, right);
     }
@@ -126,7 +141,7 @@ ExprPtr Parser::pow() {
     ExprPtr expr = unary();
 
     if (match(TokenType::POWER)) {
-        TokenType op = advance()->type;
+        TokenPtr op = advance();
         ExprPtr right = pow();
         expr = make_shared<CompoundExpr>(op, expr, right);
     }
@@ -136,7 +151,7 @@ ExprPtr Parser::pow() {
 
 ExprPtr Parser::unary() {
     if (match(TokenType::MINUS)) {
-        TokenType op = advance()->type;
+        TokenPtr op = advance();
         ExprPtr right = unary();
         return make_shared<CompoundExpr>(op, nullptr, right);
     }
@@ -190,6 +205,9 @@ StmtPtr Parser::getStmt(shared_ptr<QList<TokenPtr>> tokens) {
     TokenPtr stmtIdentifier = advance();
 
     switch (stmtIdentifier->type) {
+    case TokenType::REM:
+        stmt = getRemStmt();
+        break;
     case TokenType::LET:
         stmt = getLetStmt();
         break;

@@ -18,6 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     Basic.cpp \
     Environment.cpp \
+    Exception.cpp \
     Expr.cpp \
     Interpreter.cpp \
     Parser.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
 HEADERS += \
     Basic.h \
     Environment.h \
+    Exception.h \
     Expr.h \
     Interpreter.h \
     Parser.h \

@@ -6,18 +6,21 @@
 #include "Basic.h"
 #include "qdebug.h"
 
-extern Basic basic;
+MainWindow& MainWindow::getInstance() {
+    static MainWindow w;
+    return w;
+}
+
+MainWindow::~MainWindow() {
+    delete ui;
+}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
+    ui->statementDisplay->setTabStopWidth(4 * fontMetrics().width(' '));
 }
 
 void MainWindow::on_loadButton_clicked()
@@ -26,16 +29,24 @@ void MainWindow::on_loadButton_clicked()
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open file"), "./", tr("Basic programs (*.basic)"));
 
-    basic.loadFile(fileName);
+    Basic::getInstance().loadFile(fileName);
 }
 
 void MainWindow::codeAppendRow(QString str) {
     ui->codeDisplay->append(str);
 }
 
+void MainWindow::statementAppendRow(QString str) {
+    ui->statementDisplay->append(str);
+}
+
+void MainWindow::resultAppendRow(QString str) {
+    ui->resultDisplay->append(str);
+}
+
 void MainWindow::on_clearButton_clicked()
 {
-    basic.reset();
+    Basic::getInstance().reset();
     clearDisplays();
 }
 
@@ -55,10 +66,10 @@ void MainWindow::on_console_returnPressed()
     QString str = ui->console->text().trimmed();
     ui->console->clear();
 
-    basic.handleRawInstruction(str);
+    Basic::getInstance().handleRawInstruction(str);
 }
 
 void MainWindow::on_runButton_clicked()
 {
-    basic.showTokens();
+    Basic::getInstance().interpret();
 }

@@ -30,13 +30,26 @@
         <layout class="QVBoxLayout" name="codeLayout">
          <item>
           <widget class="QLabel" name="label">
+           <property name="font">
+            <font>
+             <family>等线 Light</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>代码</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QTextBrowser" name="codeDisplay"/>
+          <widget class="QTextBrowser" name="codeDisplay">
+           <property name="font">
+            <font>
+             <family>Consolas</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -44,13 +57,26 @@
         <layout class="QVBoxLayout" name="resultLayout">
          <item>
           <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <family>等线 Light</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>运行结果</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QTextBrowser" name="resultDisplay"/>
+          <widget class="QTextBrowser" name="resultDisplay">
+           <property name="font">
+            <font>
+             <family>Consolas</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -60,6 +86,12 @@
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QLabel" name="label_3">
+         <property name="font">
+          <font>
+           <family>等线 Light</family>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>语句与语法树</string>
          </property>
@@ -79,6 +111,12 @@
            <height>0</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Consolas</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
         </widget>
        </item>
        <item>
@@ -91,6 +129,12 @@
          </property>
          <item>
           <widget class="QPushButton" name="loadButton">
+           <property name="font">
+            <font>
+             <family>等线 Light</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>载入代码(LOAD)</string>
            </property>
@@ -98,6 +142,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="runButton">
+           <property name="font">
+            <font>
+             <family>等线 Light</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>执行代码(RUN)</string>
            </property>
@@ -105,6 +155,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="clearButton">
+           <property name="font">
+            <font>
+             <family>等线 Light</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>清空代码(CLEAR)</string>
            </property>
@@ -116,13 +172,26 @@
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
           <widget class="QLabel" name="label_4">
+           <property name="font">
+            <font>
+             <family>等线 Light</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>命令行</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="console"/>
+          <widget class="QLineEdit" name="console">
+           <property name="font">
+            <font>
+             <family>Consolas</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
