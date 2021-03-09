@@ -1,4 +1,5 @@
 #include "Basic.h"
+#include "mainwindow.h"
 
 Basic::~Basic() { }
 
@@ -10,8 +11,12 @@ Basic& Basic::getInstance() {
 }
 
 void Basic::interpret() {
+    MainWindow::getInstance().disableInput();
+
     interpreter = make_shared<Interpreter>(stmts);
     interpreter->interpret();
+
+    MainWindow::getInstance().enableInput();
 }
 
 void Basic::loadFile(QString fileName) {

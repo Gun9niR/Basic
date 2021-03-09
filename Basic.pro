@@ -51,5 +51,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     programs/fibonacci.basic \
+    programs/infiloop \
     programs/test.basic \
     programs/test_scan.basic

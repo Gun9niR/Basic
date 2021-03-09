@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>899</width>
+    <width>915</width>
     <height>919</height>
    </rect>
   </property>
@@ -17,7 +17,7 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>10</y>
       <width>871</width>
       <height>846</height>
@@ -49,6 +49,12 @@
              <pointsize>10</pointsize>
             </font>
            </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAsNeeded</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAsNeeded</enum>
+           </property>
           </widget>
          </item>
         </layout>
@@ -75,6 +81,9 @@
              <family>Consolas</family>
              <pointsize>10</pointsize>
             </font>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAsNeeded</enum>
            </property>
           </widget>
          </item>
@@ -116,6 +125,9 @@
            <family>Consolas</family>
            <pointsize>10</pointsize>
           </font>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOn</enum>
          </property>
         </widget>
        </item>
@@ -205,7 +217,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>899</width>
+     <width>915</width>
      <height>26</height>
     </rect>
    </property>

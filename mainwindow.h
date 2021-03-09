@@ -41,7 +41,14 @@ public slots:
 
     void clearDisplays();
 
+public:
+    void disableInput();
+
+    void enableInput();
+
 private:
     Ui::MainWindow *ui;
+
+    bool onInputStmt;
 };
 #endif // MAINWINDOW_H

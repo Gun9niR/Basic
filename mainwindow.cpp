@@ -17,7 +17,7 @@ MainWindow::~MainWindow() {
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow), onInputStmt(false)
 {
     ui->setupUi(this);
     ui->statementDisplay->setTabStopWidth(4 * fontMetrics().width(' '));
@@ -66,10 +66,34 @@ void MainWindow::on_console_returnPressed()
     QString str = ui->console->text().trimmed();
     ui->console->clear();
 
-    Basic::getInstance().handleRawInstruction(str);
+    if (!onInputStmt) {
+        Basic::getInstance().handleRawInstruction(str);
+    } else {
+        bool isNumber = false;
+        int num = str.toInt(&isNumber);
+        if (!isNumber) {
+            return;
+        } else {
+            // emit signal to interpreter
+        }
+    }
 }
 
 void MainWindow::on_runButton_clicked()
 {
     Basic::getInstance().interpret();
+}
+
+void MainWindow::disableInput() {
+    ui->runButton->setDisabled(true);
+    ui->clearButton->setDisabled(true);
+    ui->loadButton->setDisabled(true);
+    ui->console->setDisabled(true);
+}
+
+void MainWindow::enableInput() {
+    ui->runButton->setDisabled(false);
+    ui->clearButton->setDisabled(false);
+    ui->loadButton->setDisabled(false);
+    ui->console->setDisabled(false);
 }

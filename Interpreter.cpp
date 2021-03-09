@@ -2,6 +2,7 @@
 #include "qdebug.h"
 #include "qapplication.h"
 #include "Exception.h"
+#include "QEventLoop"
 
 Interpreter::Interpreter(map<int, StmtPtr>& stmts): stmts(stmts) {
     environment.reset();
