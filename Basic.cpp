@@ -1,5 +1,7 @@
 #include "Basic.h"
 #include "mainwindow.h"
+#include "QMessageBox"
+#include "QFileDialog"
 
 Basic::~Basic() { }
 
@@ -159,16 +161,18 @@ bool Basic::matchCommand(QString& str) {
 void Basic::runCommand(CommandType type) {
     switch(type) {
     case CommandType::RUN:
-        qDebug() << "Command: RUN";
+        MainWindow::getInstance().clearResult();
+        interpret();
         break;
     case CommandType::LOAD:
-        qDebug() << "Command: LOAD";
+        qDebug() << "Cannot execute LOAD in a file!";
         break;
     case CommandType::CLEAR:
         emit clickClearButton();
         break;
     case CommandType::HELP:
-        qDebug() << "Command: HELP";
+        QMessageBox::information(NULL, "Help", "Help information",
+                                 QMessageBox::Yes);
         break;
     case CommandType::QUIT:
         QApplication::quit();

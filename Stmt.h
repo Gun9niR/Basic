@@ -55,8 +55,13 @@ signals:
 };
 
 class InputStmt: public Stmt {
+    Q_OBJECT
 private:
     const TokenPtr name;
+    int input;
+
+public slots:
+    void receiveInput(int);
 
 public:
     InputStmt(TokenPtr name);

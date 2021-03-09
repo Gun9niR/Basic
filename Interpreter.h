@@ -7,7 +7,8 @@
 #include "Stmt.h"
 #include "QThread"
 
-class Interpreter: public QThread {
+class Interpreter: public QObject {
+    Q_OBJECT
 
 private:
     Environment environment;

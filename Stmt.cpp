@@ -1,6 +1,7 @@
 #include "Stmt.h"
 #include "mainwindow.h"
 #include "Exception.h"
+#include "QEventLoop"
 
 RemStmt::RemStmt(TokenPtr comment): comment(comment) {
     connect(this, &RemStmt::statementAppendRow, &MainWindow::getInstance(), &MainWindow::statementAppendRow);
@@ -52,10 +53,21 @@ void PrintStmt::visualize(int lineNum) {
 
 InputStmt::InputStmt(TokenPtr name): name(name) {
     connect(this, &InputStmt::statementAppendRow, &MainWindow::getInstance(), &MainWindow::statementAppendRow);
+    connect(&MainWindow::getInstance(), &MainWindow::sendInput, this, &InputStmt::receiveInput);
+}
+
+void InputStmt::receiveInput(int x) {
+    input = x;
 }
 
 void InputStmt::execute(Environment& environment) {
-    // to do
+    QString varName = name->lexeme;
+    MainWindow::getInstance().waitInput();
+    QEventLoop listener;
+    connect(&MainWindow::getInstance(), &MainWindow::sendInput, &listener, &QEventLoop::quit);
+    listener.exec();
+    environment.set(varName, input);
+    MainWindow::getInstance().finishInput();
 }
 
 void InputStmt::visualize(int lineNum) {

@@ -1,1 +1,2 @@
-010 PRINT -2 ** 2
+010 INPUT n
+020 PRINT n

@@ -46,6 +46,7 @@
 expression      ->  addition
 addition        ->  multiplication (("+" | "-") multiplication)*
 multiplication  ->  power (("*" | "/" power)*
+unaryPower      ->  ("-" unaryPower) | power
 power           ->  unary ("**" power)?
 unary           ->  (("-") unary) | primary
 primary         ->  NUMBER | ("("expression")")
@@ -56,4 +57,6 @@ primary         ->  NUMBER | ("("expression")")
 - Singleton pattern: make `Basic` and `MainWindow` globally accessable to all files
 - Visitor pattern: did not use it because it warrants public accessibility of expr properties, and add more function calls (2 more calls for each expr and stmt)
 - `shared_ptr` extensive use of it avoid excessive pass by value
-- Multithreading: make interpreter run on a separate thread to keep ui responsive
+- During interpretation, UI freezes. How to input text? 
+  - When executing `PRINT`, wait for the signal from `mainwindow`.
+  - After receving the signal, 

@@ -30,6 +30,8 @@ private slots:
 
     void on_runButton_clicked();
 
+    void on_console_cursorPositionChanged(int arg1, int arg2);
+
 public slots:
     void codeAppendRow(QString str);
 
@@ -41,10 +43,19 @@ public slots:
 
     void clearDisplays();
 
+    void clearResult();
+
+signals:
+    void sendInput(int);
+
 public:
     void disableInput();
 
     void enableInput();
+
+    void waitInput();
+
+    void finishInput();
 
 private:
     Ui::MainWindow *ui;

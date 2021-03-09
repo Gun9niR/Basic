@@ -70,17 +70,20 @@ void MainWindow::on_console_returnPressed()
         Basic::getInstance().handleRawInstruction(str);
     } else {
         bool isNumber = false;
+        str = str.mid(2);
         int num = str.toInt(&isNumber);
         if (!isNumber) {
             return;
         } else {
             // emit signal to interpreter
+            emit sendInput(num);
         }
     }
 }
 
 void MainWindow::on_runButton_clicked()
 {
+    clearResult();
     Basic::getInstance().interpret();
 }
 
@@ -96,4 +99,35 @@ void MainWindow::enableInput() {
     ui->clearButton->setDisabled(false);
     ui->loadButton->setDisabled(false);
     ui->console->setDisabled(false);
+}
+
+void MainWindow::waitInput() {
+    ui->console->setText("? ");
+    onInputStmt = true;
+    ui->console->setDisabled(false);
+}
+
+void MainWindow::finishInput() {
+    onInputStmt = false;
+    ui->console->clear();
+    ui->console->setDisabled(true);
+}
+
+void MainWindow::on_console_cursorPositionChanged(int oldPos, int newPos)
+{
+    if (onInputStmt && newPos < 2) {
+        auto currentText = ui->console->text();
+        if (currentText.length() > 2) {
+            ui->console->setReadOnly(true);
+        } else {
+            ui->console->setText("? ");
+        }
+
+    } else {
+        ui->console->setReadOnly(false);
+    }
+}
+
+void MainWindow::clearResult() {
+    ui->resultDisplay->clear();
 }
