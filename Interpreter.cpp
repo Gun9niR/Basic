@@ -3,6 +3,7 @@
 #include "qapplication.h"
 #include "Exception.h"
 #include "QEventLoop"
+#include "QtConcurrent"
 
 Interpreter::Interpreter(map<int, StmtPtr>& stmts): stmts(stmts) {
     environment.reset();

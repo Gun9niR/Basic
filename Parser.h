@@ -43,6 +43,8 @@ private:
 
     ExprPtr mult();
 
+    ExprPtr unaryPow();
+
     ExprPtr pow();
 
     ExprPtr unary();

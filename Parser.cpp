@@ -126,7 +126,7 @@ ExprPtr Parser::addition() {
 }
 
 ExprPtr Parser::mult() {
-    ExprPtr expr = pow();
+    ExprPtr expr = unaryPow();
 
     while (match({TokenType::STAR, TokenType::SLASH})) {
         TokenPtr op = advance();
@@ -135,6 +135,16 @@ ExprPtr Parser::mult() {
     }
 
     return expr;
+}
+
+ExprPtr Parser::unaryPow() {
+    if (match(TokenType::MINUS)) {
+        TokenPtr op = advance();
+        ExprPtr right = unaryPow();
+        return make_shared<CompoundExpr>(op, nullptr, right);
+    }
+
+    return pow();
 }
 
 ExprPtr Parser::pow() {

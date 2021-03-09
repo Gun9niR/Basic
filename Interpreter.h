@@ -5,9 +5,9 @@
 #include "Token.h"
 #include "Environment.h"
 #include "Stmt.h"
+#include "QThread"
 
-class Interpreter: public QObject {
-    Q_OBJECT
+class Interpreter: public QThread {
 
 private:
     Environment environment;
