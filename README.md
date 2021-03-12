@@ -38,7 +38,7 @@
 
 - [x] Read a line
 - [x] Input variable
-- [ ] Display error message
+- [x] Display error message
 
 ## Expression grammar
 

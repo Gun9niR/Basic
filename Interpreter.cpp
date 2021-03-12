@@ -4,6 +4,7 @@
 #include "Exception.h"
 #include "QEventLoop"
 #include "QtConcurrent"
+#include "mainwindow.h"
 
 Interpreter::Interpreter(map<int, StmtPtr>& stmts): stmts(stmts) {
     environment.reset();
@@ -23,13 +24,13 @@ void Interpreter::interpret() {
             pc->second->execute(environment);
         } catch (DivisionByZero dbz) {
             // division by zero, abort program
-            qDebug() << QString::number(pc->first) + ": " + dbz.getMsg();
+            MainWindow::getInstance().errorAppendRow(QString::number(pc->first) + ": " + dbz.getMsg());
             break;
         } catch (JumpSignal jmp) {
             int jumpDest = jmp.getJumpDest();
             if (!stmts.count(jumpDest)) {
                 // no such line, abort program
-                qDebug() << QString::number(pc->first) + ": " + jmp.getMsg();
+                MainWindow::getInstance().errorAppendRow(QString::number(pc->first) + ": " + jmp.getMsg());
                 break;
             } else {
                 // jump
@@ -38,10 +39,10 @@ void Interpreter::interpret() {
             }
         } catch (NoSuchVariable nsv) {
             // no such variable, abort program
-            qDebug() << QString::number(pc->first) + ": " + nsv.getMsg();
+            MainWindow::getInstance().errorAppendRow(QString::number(pc->first) + ": " + nsv.getMsg());
             break;
         } catch (EndSignal end) {
-            qDebug() << end.getMsg();
+            MainWindow::getInstance().errorAppendRow(end.getMsg());
             break;
         }
 

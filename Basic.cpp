@@ -51,7 +51,7 @@ int Basic::getLineNumber(QString& str) {
 
     // check if str starts with a number
     if (!str[0].isDigit()) {
-        throw QString("An instruction must start with a line number, ignoring this line");
+        throw QString("An instruction must start with a line number");
     }
 
     // calculate line number,  string
@@ -66,7 +66,7 @@ int Basic::getLineNumber(QString& str) {
     str = str.mid(pos).trimmed();
 
     if (str.isEmpty()) {
-        throw QString("Empty instruction, ignoring this line");
+        throw QString("Empty instruction");
     }
     return lineNumber;
 }
@@ -91,7 +91,7 @@ void Basic::handleRawInstruction(QString& str) {
     try {
         codeLineNum = getLineNumber(str);
     } catch (QString errMsg) {
-        qDebug() << copy + ": " + errMsg;
+        MainWindow::getInstance().errorAppendRow(copy + ": " + errMsg);
         return;
     }
 
@@ -100,7 +100,7 @@ void Basic::handleRawInstruction(QString& str) {
     try {
         tokenList = scanner.getTokens(str);
     } catch (QString errMsg) {
-        qDebug() << QString::number(codeLineNum) + ": " + errMsg;
+        MainWindow::getInstance().errorAppendRow(QString::number(codeLineNum) + ": " + errMsg);
         return;
     }
 
@@ -109,7 +109,7 @@ void Basic::handleRawInstruction(QString& str) {
     try {
         stmt = parser.getStmt(tokenList);
     } catch (QString errMsg) {
-        qDebug() << QString::number(codeLineNum) + ": " + errMsg;
+        MainWindow::getInstance().errorAppendRow(QString::number(codeLineNum) + ": " + errMsg);
         return;
     }
 
@@ -162,6 +162,7 @@ void Basic::runCommand(CommandType type) {
     switch(type) {
     case CommandType::RUN:
         MainWindow::getInstance().clearResult();
+        MainWindow::getInstance().clearError();
         interpret();
         break;
     case CommandType::LOAD:

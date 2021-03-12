@@ -64,6 +64,7 @@ void MainWindow::clearDisplays() {
     ui->codeDisplay->clear();
     ui->resultDisplay->clear();
     ui->statementDisplay->clear();
+    ui->errorDisplay->clear();
 }
 
 void MainWindow::on_console_returnPressed()
@@ -88,6 +89,7 @@ void MainWindow::on_console_returnPressed()
 void MainWindow::on_runButton_clicked()
 {
     clearResult();
+    MainWindow::getInstance().clearError();
     Basic::getInstance().interpret();
 }
 
@@ -148,4 +150,12 @@ void MainWindow::on_saveButton_clicked()
     file.open(QIODevice::WriteOnly);
     file.write(str.toUtf8());
     file.close();
+}
+
+void MainWindow::errorAppendRow(QString str) {
+    ui->errorDisplay->append(str);
+}
+
+void MainWindow::clearError() {
+    ui->errorDisplay->clear();
 }

@@ -41,6 +41,8 @@ public:
 
     void resultAppendRow(QString str);
 
+    void errorAppendRow(QString str);
+
     void clickClearButton();
 
     void clickLoadButton();
@@ -48,6 +50,8 @@ public:
     void clearDisplays();
 
     void clearResult();
+
+    void clearError();
 
 signals:
     void sendInput(int);

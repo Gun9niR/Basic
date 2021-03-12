@@ -105,11 +105,6 @@ shared_ptr<EndStmt> Parser::getEndStmt() {
 }
 
 ExprPtr Parser::expression() {
-    // just a wrapper for testing
-//    ExprPtr expr = addition();
-//    Environment e;
-//    qDebug() << expr->evaluate(e);
-//    return expr;
     return addition();
 }
 
