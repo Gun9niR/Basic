@@ -2,17 +2,11 @@
 #include "mainwindow.h"
 #include "Exception.h"
 
-ConstantExpr::ConstantExpr(double v): val(v) {
-    connect(this, &ConstantExpr::statementAppendRow, &MainWindow::getInstance(), &MainWindow::statementAppendRow);
-}
+ConstantExpr::ConstantExpr(double v): val(v) { }
 
-IdentifierExpr::IdentifierExpr(QString str): name(str) {
-    connect(this, &IdentifierExpr::statementAppendRow, &MainWindow::getInstance(), &MainWindow::statementAppendRow);
-}
+IdentifierExpr::IdentifierExpr(QString str): name(str) { }
 
-CompoundExpr::CompoundExpr(TokenPtr t, ExprPtr l, ExprPtr r): op(t), left(l), right(r) {
-    connect(this, &CompoundExpr::statementAppendRow, &MainWindow::getInstance(), &MainWindow::statementAppendRow);
-}
+CompoundExpr::CompoundExpr(TokenPtr t, ExprPtr l, ExprPtr r): op(t), left(l), right(r) { }
 
 double ConstantExpr::evaluate(Environment& environment) {
     return val;
@@ -30,7 +24,7 @@ void ConstantExpr::visualize(int indents) {
     strToAppend += QString::number(val);
 
 
-    emit statementAppendRow(strToAppend);
+    MainWindow::getInstance().statementAppendRow(strToAppend);
 }
 
 double IdentifierExpr::evaluate(Environment& environment) {
@@ -51,7 +45,7 @@ void IdentifierExpr::visualize(int indents) {
     // append identifier
     strToAppend += name;
 
-    emit statementAppendRow(strToAppend);
+    MainWindow::getInstance().statementAppendRow(strToAppend);
 }
 
 double CompoundExpr::evaluate(Environment& environment) {
@@ -86,7 +80,7 @@ void CompoundExpr::visualize(int indents) {
 
     // append identifier
     strToAppend += op->lexeme;
-    emit statementAppendRow(strToAppend);
+    MainWindow::getInstance().statementAppendRow(strToAppend);
 
     if (left != nullptr) {
         left->visualize(indents + 1);

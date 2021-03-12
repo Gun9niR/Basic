@@ -6,15 +6,10 @@
 #include "Token.h"
 #include "Expr.h"
 
-class Stmt: public QObject {
-    Q_OBJECT
-
+class Stmt {
 public:
     virtual void execute(Environment &) = 0;
     virtual void visualize(int) = 0;
-
-signals:
-    void statementAppendRow(QString str);
 };
 
 typedef shared_ptr<Stmt> StmtPtr;
@@ -41,7 +36,6 @@ public:
 };
 
 class PrintStmt: public Stmt {
-    Q_OBJECT
 private:
     const ExprPtr expr;
 
@@ -49,12 +43,9 @@ public:
     PrintStmt(ExprPtr);
     void execute(Environment &) override;
     void visualize(int) override;
-
-signals:
-    void resultAppendRow(QString);
 };
 
-class InputStmt: public Stmt {
+class InputStmt:  public QObject, public Stmt {
     Q_OBJECT
 private:
     const TokenPtr name;

@@ -16,7 +16,7 @@
 
 ### Parsing
 
-- Detect non-statement code
+- Detect non-statement code or grammar error
 
 ### Interpreting
 
@@ -33,12 +33,12 @@
 - [x] CLEAR
 - [] HELP (message box)
 - [x] QUIT
-- [] Define command behaviour in file
 
 ### Console
 
 - [x] Read a line
-- [ ] Input variable
+- [x] Input variable
+- [ ] Display error message
 
 ## Expression grammar
 
@@ -57,6 +57,3 @@ primary         ->  NUMBER | ("("expression")")
 - Singleton pattern: make `Basic` and `MainWindow` globally accessable to all files
 - Visitor pattern: did not use it because it warrants public accessibility of expr properties, and add more function calls (2 more calls for each expr and stmt)
 - `shared_ptr` extensive use of it avoid excessive pass by value
-- During interpretation, UI freezes. How to input text? 
-  - When executing `PRINT`, wait for the signal from `mainwindow`.
-  - After receving the signal, 

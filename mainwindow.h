@@ -32,7 +32,9 @@ private slots:
 
     void on_console_cursorPositionChanged(int arg1, int arg2);
 
-public slots:
+    void on_saveButton_clicked();
+
+public:
     void codeAppendRow(QString str);
 
     void statementAppendRow(QString str);
@@ -40,6 +42,8 @@ public slots:
     void resultAppendRow(QString str);
 
     void clickClearButton();
+
+    void clickLoadButton();
 
     void clearDisplays();
 

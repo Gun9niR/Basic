@@ -24,7 +24,7 @@ void Basic::interpret() {
 void Basic::loadFile(QString fileName) {
     // if the file is empty, all the displays will not be cleared
     reset();
-    emit clearDisplays();
+    MainWindow::getInstance().clearDisplays();
 
     // open file
     file.setFileName(fileName);
@@ -76,8 +76,8 @@ void Basic::handleRawInstruction(QString& str) {
         return;
     }
 
-    // save a copy of str
-    QString copy = str;
+    // save a copy of str for error message
+    QStringRef copy = &str;
 
     // check if str is a command
     if (matchCommand(str)) {
@@ -146,9 +146,9 @@ void Basic::displayCode() {
     int maxLineNum = rawInstruction.rbegin()->first;
     int maxDigits = getDigits(maxLineNum);
 
-    // emit signal to update content in codeDisplay
+    // update content in codeDisplay
     for (auto i = rawInstruction.begin(); i != rawInstruction.end(); ++i ) {
-        emit codeAppendRow(QString::number(i->first).rightJustified(maxDigits, '0') + " " + i->second);
+        MainWindow::getInstance().codeAppendRow(QString::number(i->first).rightJustified(maxDigits, '0') + " " + i->second);
     }
 }
 
@@ -165,10 +165,10 @@ void Basic::runCommand(CommandType type) {
         interpret();
         break;
     case CommandType::LOAD:
-        qDebug() << "Cannot execute LOAD in a file!";
+        MainWindow::getInstance().clickLoadButton();
         break;
     case CommandType::CLEAR:
-        emit clickClearButton();
+        MainWindow::getInstance().clickClearButton();
         break;
     case CommandType::HELP:
         QMessageBox::information(NULL, "Help", "Help information",
@@ -203,7 +203,7 @@ int Basic::getDigits(int x) {
 }
 
 void Basic::display() {
-    emit clearDisplays();
+    MainWindow::getInstance().clearDisplays();
     displaySyntaxTree();
     displayCode();
 }

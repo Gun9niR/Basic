@@ -5,14 +5,10 @@
 #include "Environment.h"
 #include "Token.h"
 
-class Expr: public QObject {
-    Q_OBJECT
+class Expr {
 public:
     virtual double evaluate(Environment &) = 0;
     virtual void visualize(int) = 0;
-
-signals:
-    void statementAppendRow(QString str);
 };
 
 typedef shared_ptr<Expr> ExprPtr;

@@ -178,6 +178,19 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="saveButton">
+           <property name="font">
+            <font>
+             <family>等线 Light</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>保存代码</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>

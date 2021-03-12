@@ -7,9 +7,7 @@
 #include "Stmt.h"
 #include "QThread"
 
-class Interpreter: public QObject {
-    Q_OBJECT
-
+class Interpreter {
 private:
     Environment environment;
     map<int, StmtPtr>& stmts;

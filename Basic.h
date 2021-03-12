@@ -8,9 +8,7 @@
 #include "Parser.h"
 #include "Interpreter.h"
 
-class Basic: public QObject {
-    Q_OBJECT
-
+class Basic {
 private:
     const std::unordered_map<QString, CommandType> COMMANDS {
         { "RUN", CommandType::RUN },
@@ -35,13 +33,6 @@ private:
 
     Basic();
     ~Basic();
-
-signals:
-    void codeAppendRow(QString str);
-
-    void clickClearButton();
-
-    void clearDisplays();
 
 public:
     // singleton pattern
@@ -81,6 +72,7 @@ private:
     // run the command
     void runCommand(CommandType type);
 
+    // helper function, get the number of digits of an integer
     int getDigits(int x);
 };
 

@@ -55,6 +55,11 @@ void MainWindow::clickClearButton() {
     on_clearButton_clicked();
 }
 
+void MainWindow::clickLoadButton() {
+    // cannot use animateClick, as it seems to be async
+    on_loadButton_clicked();
+}
+
 void MainWindow::clearDisplays() {
     ui->codeDisplay->clear();
     ui->resultDisplay->clear();
@@ -75,7 +80,6 @@ void MainWindow::on_console_returnPressed()
         if (!isNumber) {
             return;
         } else {
-            // emit signal to interpreter
             emit sendInput(num);
         }
     }
@@ -91,6 +95,7 @@ void MainWindow::disableInput() {
     ui->runButton->setDisabled(true);
     ui->clearButton->setDisabled(true);
     ui->loadButton->setDisabled(true);
+    ui->saveButton->setDisabled(true);
     ui->console->setDisabled(true);
 }
 
@@ -98,6 +103,7 @@ void MainWindow::enableInput() {
     ui->runButton->setDisabled(false);
     ui->clearButton->setDisabled(false);
     ui->loadButton->setDisabled(false);
+    ui->saveButton->setDisabled(false);
     ui->console->setDisabled(false);
 }
 
@@ -130,4 +136,16 @@ void MainWindow::on_console_cursorPositionChanged(int oldPos, int newPos)
 
 void MainWindow::clearResult() {
     ui->resultDisplay->clear();
+}
+
+void MainWindow::on_saveButton_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+        tr("Save file"), "./", tr("Basic programs (*.basic)"));
+
+    QString str = ui->codeDisplay->toPlainText();
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly);
+    file.write(str.toUtf8());
+    file.close();
 }
