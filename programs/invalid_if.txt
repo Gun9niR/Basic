@@ -1,0 +1,4 @@
+002 LET cyx = 1
+003 LET gzd = 1
+010 IF cyx love gzd THEN THEY_GET_MARRIED
+020 IF 2 > 1 THEN 30.0

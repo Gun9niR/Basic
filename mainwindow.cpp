@@ -17,7 +17,7 @@ MainWindow::~MainWindow() {
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow), onInputStmt(false)
+    , isRunning(false), ui(new Ui::MainWindow), onInputStmt(false)
 {
     ui->setupUi(this);
     ui->statementDisplay->setTabStopWidth(4 * fontMetrics().width(' '));
@@ -27,9 +27,11 @@ void MainWindow::on_loadButton_clicked()
 {
     // select file path with a dialogue
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open file"), "./", tr("Basic programs (*.basic)"));
+        tr("Open file"), "./", tr("All(*.*)"));
 
-    Basic::getInstance().loadFile(fileName);
+    if (!fileName.isEmpty()) {
+        Basic::getInstance().loadFile(fileName);
+    }
 }
 
 void MainWindow::codeAppendRow(QString str) {
@@ -56,7 +58,6 @@ void MainWindow::clickClearButton() {
 }
 
 void MainWindow::clickLoadButton() {
-    // cannot use animateClick, as it seems to be async
     on_loadButton_clicked();
 }
 
@@ -79,18 +80,29 @@ void MainWindow::on_console_returnPressed()
         str = str.mid(2);
         int num = str.toInt(&isNumber);
         if (!isNumber) {
-            return;
+            emit sendInput(std::numeric_limits<int>::quiet_NaN());
         } else {
             emit sendInput(num);
         }
     }
 }
 
+void MainWindow::clickRunButton() {
+    on_runButton_clicked();
+}
+
+void MainWindow::clearStatement() {
+    ui->statementDisplay->clear();
+}
+
 void MainWindow::on_runButton_clicked()
 {
     clearResult();
-    MainWindow::getInstance().clearError();
+    clearStatement();
+    clearError();
+    isRunning = true;
     Basic::getInstance().interpret();
+    isRunning = false;
 }
 
 void MainWindow::disableInput() {
@@ -118,7 +130,9 @@ void MainWindow::waitInput() {
 void MainWindow::finishInput() {
     onInputStmt = false;
     ui->console->clear();
-    ui->console->setDisabled(true);
+    if (isRunning) {
+        ui->console->setDisabled(true);
+    }
 }
 
 void MainWindow::on_console_cursorPositionChanged(int oldPos, int newPos)
@@ -143,7 +157,7 @@ void MainWindow::clearResult() {
 void MainWindow::on_saveButton_clicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
-        tr("Save file"), "./", tr("Basic programs (*.basic)"));
+        tr("Save file"), "./", tr("All(*.*)"));
 
     QString str = ui->codeDisplay->toPlainText();
     QFile file(fileName);
@@ -158,4 +172,17 @@ void MainWindow::errorAppendRow(QString str) {
 
 void MainWindow::clearError() {
     ui->errorDisplay->clear();
+}
+
+void MainWindow::scrollErrorDisplayToTop() {
+    ui->errorDisplay->moveCursor(QTextCursor::Start);
+}
+
+void MainWindow::clearCode() {
+    ui->codeDisplay->clear();
+}
+
+void MainWindow::on_helpButton_clicked()
+{
+    Basic::getInstance().runCommand(CommandType::HELP);
 }

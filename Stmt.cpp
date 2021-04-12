@@ -26,7 +26,7 @@ void LetStmt::visualize(int lineNum) {
 }
 
 void LetStmt::execute(Environment& environment) {
-    double value = initializer->evaluate(environment);
+    int value = initializer->evaluate(environment);
 
     environment.set(name->lexeme, value);
 }
@@ -34,7 +34,7 @@ void LetStmt::execute(Environment& environment) {
 PrintStmt::PrintStmt(ExprPtr expr): expr(expr) { }
 
 void PrintStmt::execute(Environment& environment) {
-    double res = expr->evaluate(environment);
+    int res = expr->evaluate(environment);
     MainWindow::getInstance().resultAppendRow(QString::number(res));
 }
 
@@ -59,7 +59,10 @@ void InputStmt::execute(Environment& environment) {
     QEventLoop listener;
     connect(&MainWindow::getInstance(), &MainWindow::sendInput, &listener, &QEventLoop::quit);
     listener.exec();
-
+    if (input == std::numeric_limits<int>::quiet_NaN()) {
+        MainWindow::getInstance().finishInput();
+        throw InvalidInput();
+    }
     environment.set(varName, input);
     MainWindow::getInstance().finishInput();
 }
@@ -85,8 +88,8 @@ void GotoStmt::visualize(int lineNum) {
 IfStmt::IfStmt(TokenPtr op, ExprPtr e1, ExprPtr e2, int lineNum): op(op), expr1(e1), expr2(e2), lineNum(lineNum) { }
 
 void IfStmt::execute(Environment& environment) {
-    double val1 = expr1->evaluate(environment);
-    double val2 = expr2->evaluate(environment);
+    int val1 = expr1->evaluate(environment);
+    int val2 = expr2->evaluate(environment);
     bool condition = false;
 
     switch (op->type) {
@@ -128,4 +131,14 @@ void EndStmt::execute(Environment& environment) {
 
 void EndStmt::visualize(int lineNum) {
     MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " END"));
+}
+
+ErrorStmt::ErrorStmt(QString errorMsg): errorMsg(errorMsg) { }
+
+void ErrorStmt::execute(Environment &) {
+    throw ScanOrParseError(errorMsg);
+}
+
+void ErrorStmt::visualize(int lineNum) {
+    MainWindow::getInstance().statementAppendRow(QString::number(lineNum) + ": " + errorMsg);
 }

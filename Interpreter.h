@@ -6,16 +6,24 @@
 #include "Environment.h"
 #include "Stmt.h"
 #include "QThread"
+#include "Scanner.h"
+#include "Parser.h"
 
 class Interpreter {
 private:
-    Environment environment;
-    map<int, StmtPtr>& stmts;
-    map<int, StmtPtr>::iterator pc;
+    map<LineNum, QString>& rawInstructions;
+    map<LineNum, StmtPtr> stmts;
+
+    map<LineNum, StmtPtr>::iterator pc;
+    Scanner scanner;
+    Parser parser;
+    Environment& environment;
 
 public:
-    Interpreter(map<int, StmtPtr>&);
+    Interpreter(map<LineNum, QString>&, Environment&);
 
     void interpret();
+
+    static void interpret(QString&, Environment&);
 };
 #endif // INTERPRETER_H

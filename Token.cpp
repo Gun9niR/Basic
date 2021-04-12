@@ -2,7 +2,7 @@
 
 Token::Token(TokenType t,
              QString l,
-             double v): type(t), lexeme(l), value(v) { }
+             int v): type(t), lexeme(l), value(v) { }
 
 QDebug operator<<(QDebug dbg, const Token & token) {
     QString typeName;

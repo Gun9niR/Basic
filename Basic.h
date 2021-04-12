@@ -16,24 +16,22 @@ private:
         { "CLEAR", CommandType::CLEAR },
         { "HELP", CommandType::HELP },
         { "QUIT", CommandType::QUIT },
+        { "LIST", CommandType::LIST },
     };
 
     // code as string, tokens and statements
-    map<int, QString> rawInstruction;
-    map<int, shared_ptr<QList<TokenPtr>>> tokens;
-    map<int, StmtPtr> stmts;
+    map<LineNum, QString> rawInstruction;
+    map<LineNum, QString> rawString;
 
     // state
     QFile file;
+    bool isLoadingFile;
 
-    // tools
     shared_ptr<Interpreter> interpreter;
-    Scanner scanner;
-    Parser parser;
+    Environment environment;
 
     Basic();
     ~Basic();
-
 public:
     // singleton pattern
     static Basic& getInstance();
@@ -50,27 +48,24 @@ public:
     // instantiate interpreter and interpret
     void interpret();
 
-    // debug functions
-    void showTokens();
+    // run the command
+    void runCommand(CommandType type);
 
 private:
     // get line number from a instruction string
-    int getLineNumber(QString& str);
+    LineNum getLineNumber(QString& str);
 
-    // display code and syntax tree
-    void display();
+    // display code with line number alignment
+    void displayInstruction();
 
-    // display code with codeAppendRow in the text browser
+    // display original text
     void displayCode();
-
-    // display syxtax tree with codeAppendRow in the text browser
-    void displaySyntaxTree();
 
     // check if a string is a command
     bool matchCommand(QString& str);
 
-    // run the command
-    void runCommand(CommandType type);
+    // check if a string match those three stmts
+    bool matchStmtWithoutLineNumber(QString& str, QString& stmt);
 
     // helper function, get the number of digits of an integer
     int getDigits(int x);

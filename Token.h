@@ -8,10 +8,10 @@ class Token {
 public:
     TokenType type;
     QString lexeme;
-    double value;
+    int value;
 
 public:
-    Token(TokenType t, QString l, double v = std::numeric_limits<double>::quiet_NaN());
+    Token(TokenType t, QString l, int v = std::numeric_limits<int>::quiet_NaN());
 
     friend QDebug operator<<(QDebug dbg, const Token & token);
 };

@@ -3,6 +3,8 @@
 #include "QMessageBox"
 #include "QFileDialog"
 
+#include <QRegularExpression>
+
 Basic::~Basic() { }
 
 Basic::Basic() { }
@@ -15,7 +17,7 @@ Basic& Basic::getInstance() {
 void Basic::interpret() {
     MainWindow::getInstance().disableInput();
 
-    interpreter = make_shared<Interpreter>(stmts);
+    interpreter = make_shared<Interpreter>(rawInstruction, environment);
     interpreter->interpret();
 
     MainWindow::getInstance().enableInput();
@@ -39,13 +41,15 @@ void Basic::loadFile(QString fileName) {
         // process the string
         // the string can be a command or instruction
         // commands need to be run immediately
+        isLoadingFile = true;
         handleRawInstruction(str);
+        isLoadingFile = false;
     }
 
     file.close();
 }
 
-int Basic::getLineNumber(QString& str) {
+LineNum Basic::getLineNumber(QString& str) {
     // str is not empty
     int lineNumber = 0;
 
@@ -65,29 +69,38 @@ int Basic::getLineNumber(QString& str) {
     // get the finally trimmed instruction
     str = str.mid(pos).trimmed();
 
-    if (str.isEmpty()) {
-        throw QString("Empty instruction");
-    }
     return lineNumber;
 }
 
 void Basic::handleRawInstruction(QString& str) {
+    // string is trimmed already
     if (str.isEmpty()) {
         return;
     }
 
     // save a copy of str for error message
-    QStringRef copy = &str;
+    QString copy = str;
 
     // check if str is a command
     if (matchCommand(str)) {
-        display();
         runCommand(COMMANDS.find(str)->second);
         return;
     }
 
+    // check if str is among the statements that can be executed
+    QString oneOfTheThreeStmts = nullptr;
+    if (matchStmtWithoutLineNumber(str, oneOfTheThreeStmts)) {
+        if (isLoadingFile) {
+            MainWindow::getInstance().errorAppendRow(oneOfTheThreeStmts + " statement must follow a line number in the file!");
+            return;
+        } else {
+            Interpreter::interpret(str, environment);
+            return;
+        }
+    }
+
     // get the line number, remove it from the string
-    int codeLineNum = 0;
+    LineNum codeLineNum = 0;
     try {
         codeLineNum = getLineNumber(str);
     } catch (QString errMsg) {
@@ -95,38 +108,36 @@ void Basic::handleRawInstruction(QString& str) {
         return;
     }
 
-    // scan the string
-    shared_ptr<QList<TokenPtr>> tokenList;
-    try {
-        tokenList = scanner.getTokens(str);
-    } catch (QString errMsg) {
-        MainWindow::getInstance().errorAppendRow(QString::number(codeLineNum) + ": " + errMsg);
+    if (codeLineNum == 0) {
+        MainWindow::getInstance().errorAppendRow(copy + ": Line number must be a positive integer.");
+        return;
+    }
+    if (codeLineNum > 1000000) {
+        MainWindow::getInstance().errorAppendRow(copy + ": Line number must not exceed 1000000.");
         return;
     }
 
-    // parse the list of tokens
-    StmtPtr stmt;
-    try {
-        stmt = parser.getStmt(tokenList);
-    } catch (QString errMsg) {
-        MainWindow::getInstance().errorAppendRow(QString::number(codeLineNum) + ": " + errMsg);
-        return;
+    // check for empty instruction
+    if (str.isEmpty()) {
+        if (rawInstruction.count(codeLineNum)) {
+            rawInstruction.erase(codeLineNum);
+            displayCode();
+            return;
+        } else {
+            return;
+        }
     }
-
-    // add the instruction to three maps
+    // add to raw instruction
     rawInstruction[codeLineNum] = str;
-    tokens[codeLineNum] = tokenList;
-    stmts[codeLineNum] = stmt;
-
-    // display code string and syntax tree
-    display();
+    rawString[codeLineNum] = copy;
+    displayCode();
 }
 
 void Basic::reset() {
     // reset all properties
     rawInstruction.clear();
-    tokens.clear();
-    stmts.clear();
+    rawString.clear();
+    environment.reset();
 
     // close the file
     if (file.isOpen()) {
@@ -135,9 +146,21 @@ void Basic::reset() {
     file.setFileName("");
 }
 
+int Basic::getDigits(int x) {
+    int ret = 0;
 
-void Basic::displayCode() {
+    while (x) {
+        ++ret;
+        x /= 10;
+    }
+
+    return ret;
+}
+
+void Basic::displayInstruction() {
     // clear codeDisplay first
+    MainWindow::getInstance().clearCode();
+
     // align the code number
     if (rawInstruction.empty()) {
         return;
@@ -152,6 +175,18 @@ void Basic::displayCode() {
     }
 }
 
+void Basic::displayCode() {
+    MainWindow::getInstance().clearCode();
+
+    if (rawString.empty()) {
+        return;
+    }
+
+    for (auto i = rawString.begin(); i != rawString.end(); ++i ) {
+        MainWindow::getInstance().codeAppendRow(i->second);
+    }
+}
+
 bool Basic::matchCommand(QString& str) {
     // check if str is a command
     return COMMANDS.count(str);
@@ -161,9 +196,7 @@ bool Basic::matchCommand(QString& str) {
 void Basic::runCommand(CommandType type) {
     switch(type) {
     case CommandType::RUN:
-        MainWindow::getInstance().clearResult();
-        MainWindow::getInstance().clearError();
-        interpret();
+        MainWindow::getInstance().clickRunButton();
         break;
     case CommandType::LOAD:
         MainWindow::getInstance().clickLoadButton();
@@ -172,45 +205,29 @@ void Basic::runCommand(CommandType type) {
         MainWindow::getInstance().clickClearButton();
         break;
     case CommandType::HELP:
-        QMessageBox::information(NULL, "Help", "Help information",
-                                 QMessageBox::Yes);
+        MainWindow::getInstance().clearError();
+        MainWindow::getInstance().errorAppendRow(HELP_MESSAGE);
+        MainWindow::getInstance().scrollErrorDisplayToTop();
         break;
     case CommandType::QUIT:
         QApplication::quit();
         break;
+    case CommandType::LIST:
+        break;
     }
 }
 
-void Basic::showTokens() {
-    for (auto line = tokens.begin(); line != tokens.end(); ++line) {
-        auto lineNum = line->first;
-        qDebug() << "On line " << lineNum;
-        auto list = *(line->second);
-        for (auto token = list.begin(); token != list.end(); ++token) {
-            qDebug() << **token;
-        }
+bool Basic::matchStmtWithoutLineNumber(QString& str, QString& stmt) {
+    if (str.startsWith("PRINT")) {
+        stmt = "PRINT";
+        return true;
+    } else if (str.startsWith("INPUT")) {
+        stmt = "INPUT";
+        return true;
+    } else if (str.startsWith("LET")) {
+        stmt = "LET";
+        return true;
     }
+    return false;
 }
 
-int Basic::getDigits(int x) {
-    int ret = 0;
-
-    while (x) {
-        ++ret;
-        x /= 10;
-    }
-
-    return ret;
-}
-
-void Basic::display() {
-    MainWindow::getInstance().clearDisplays();
-    displaySyntaxTree();
-    displayCode();
-}
-
-void Basic::displaySyntaxTree() {
-    for (auto iterator: stmts) {
-        iterator.second->visualize(iterator.first);
-    }
-}

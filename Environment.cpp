@@ -4,11 +4,11 @@ Environment::Environment() {
     symbolTable.clear();
 }
 
-void Environment::set(QString name, double value) {
+void Environment::set(QString name, int value) {
     symbolTable[name] = value;
 }
 
-double Environment::get(QString name) {
+int Environment::get(QString name) {
     return symbolTable[name];
 }
 

@@ -2,7 +2,6 @@
 #include "Interpreter.h"
 
 #include <QApplication>
-#include <memory>
 #include "Basic.h"
 
 

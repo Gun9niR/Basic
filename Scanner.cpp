@@ -69,10 +69,10 @@ void Scanner::getOneToken(shared_ptr<QList<TokenPtr>> list) {
         if (c.isDigit()) {
             // handle number
             QString numString = getNumber().toString();
-            double val = numString.toDouble();
+            int val = numString.toInt();
 
             list->push_back(make_shared<Token>(TokenType::NUMBER, numString, val));
-        } else if (c.isLetter()) {
+        } else if (c.isLetter() || c == '_') {
             QString identifier = getIdentifier().toString();
 
             if (keywords.count(identifier)) {
@@ -90,7 +90,7 @@ void Scanner::getOneToken(shared_ptr<QList<TokenPtr>> list) {
                 list->push_back(make_shared<Token>(TokenType::IDENTIFIER, identifier));
             }
         } else {
-            throw (QString("Unexpected character '") + c + "', ignoring this line");
+            throw (QString("Unexpected character '") + c + "'");
         }
         break;
     }

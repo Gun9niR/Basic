@@ -7,7 +7,7 @@
 
 class Expr {
 public:
-    virtual double evaluate(Environment &) = 0;
+    virtual int evaluate(Environment &) = 0;
     virtual void visualize(int) = 0;
 };
 
@@ -15,11 +15,11 @@ typedef shared_ptr<Expr> ExprPtr;
 
 class ConstantExpr: public Expr {
 private:
-    const double val;
+    const int val;
 
 public:
-    ConstantExpr(double v);
-    double evaluate(Environment &) override;
+    ConstantExpr(int v);
+    int evaluate(Environment &) override;
     void visualize(int) override;
 };
 
@@ -29,7 +29,7 @@ private:
 
 public:
     IdentifierExpr(QString str);
-    double evaluate(Environment &) override;
+    int evaluate(Environment &) override;
     void visualize(int) override;
 };
 
@@ -42,7 +42,7 @@ private:
 
 public:
     CompoundExpr(TokenPtr t, ExprPtr l, ExprPtr r);
-    double evaluate(Environment &) override;
+    int evaluate(Environment &) override;
     void visualize(int) override;
 };
 #endif // EXPR_H

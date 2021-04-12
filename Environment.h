@@ -4,14 +4,18 @@
 
 class Environment {
 public:
-    void set(QString name, double value);
-    double get(QString name);
+    void set(QString name, int value);
+
+    int get(QString name);
+
     bool isDefined(QString name);
-    void reset();
+
     Environment();
 
+    void reset();
+
 private:
-    map<QString, double> symbolTable;
+    map<QString, int> symbolTable;
 };
 
 #endif // ENVIRONMENT_H

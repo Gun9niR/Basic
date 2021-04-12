@@ -5,12 +5,12 @@
 
 class Exception {
 public:
-    virtual QString getMsg() = 0;
+    virtual QString getMsg() const = 0 ;
 };
 
 class DivisionByZero: public Exception {
 public:
-    QString getMsg();
+    QString getMsg() const override;
 };
 
 class JumpSignal: public Exception {
@@ -19,8 +19,8 @@ private:
 
 public:
     JumpSignal(int);
-    int getJumpDest();
-    QString getMsg();
+    int getJumpDest() const;
+    QString getMsg() const override;
 };
 
 class NoSuchVariable: public Exception {
@@ -29,12 +29,35 @@ private:
 
 public:
     NoSuchVariable(QString);
-    QString getMsg();
+    QString getMsg() const override;
 };
 
 class EndSignal: public Exception {
 public:
-    QString getMsg() override;
+    QString getMsg() const override;
+};
+
+class ScanOrParseError: public Exception {
+private:
+    QString errorMsg;
+
+public:
+   ScanOrParseError(QString);
+   QString getMsg() const override;
+};
+
+class InvalidInput: public Exception {
+public:
+    QString getMsg() const override;
+};
+
+class PowerError: public Exception {
+private:
+    QString errorMsg;
+
+public:
+    PowerError(QString errorMsg);
+    QString getMsg() const override;
 };
 
 #endif // EXCEPTION_H

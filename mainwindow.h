@@ -13,6 +13,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    bool isRunning;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -34,6 +35,8 @@ private slots:
 
     void on_saveButton_clicked();
 
+    void on_helpButton_clicked();
+
 public:
     void codeAppendRow(QString str);
 
@@ -47,11 +50,19 @@ public:
 
     void clickLoadButton();
 
+    void clickRunButton();
+
     void clearDisplays();
 
     void clearResult();
 
+    void clearCode();
+
+    void clearStatement();
+
     void clearError();
+
+    void scrollErrorDisplayToTop();
 
 signals:
     void sendInput(int);

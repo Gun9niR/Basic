@@ -1,3 +1,4 @@
+#include "Exception.h"
 #include "Parser.h"
 
 Parser::Parser(): source(), current(), end() {}
@@ -102,6 +103,10 @@ shared_ptr<IfStmt> Parser::getIfStmt() {
 shared_ptr<EndStmt> Parser::getEndStmt() {
     checkEnd();
     return make_shared<EndStmt>();
+}
+
+shared_ptr<ErrorStmt> Parser::getErrorStmt(QString errorMsg) {
+    return make_shared<ErrorStmt>(errorMsg);
 }
 
 ExprPtr Parser::expression() {
@@ -231,6 +236,8 @@ StmtPtr Parser::getStmt(shared_ptr<QList<TokenPtr>> tokens) {
     case TokenType::END:
         stmt = getEndStmt();
         break;
+    case TokenType::ERROR:
+        throw QString(stmtIdentifier->lexeme);
     default:
         throw QString("Invalid start of statement: " + stmtIdentifier->lexeme);
     }

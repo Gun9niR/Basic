@@ -1,0 +1,3 @@
+010 REM When processing INPUT, type in something wrong
+020 INPUT _n
+030 PRINT _n

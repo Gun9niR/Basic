@@ -37,6 +37,8 @@ private:
 
     shared_ptr<EndStmt> getEndStmt();
 
+    shared_ptr<ErrorStmt> getErrorStmt(QString errorMsg);
+
     ExprPtr expression();
 
     ExprPtr addition();

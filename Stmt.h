@@ -90,4 +90,14 @@ public:
     void visualize(int) override;
 };
 
+class ErrorStmt: public Stmt {
+private:
+    const QString errorMsg;
+
+public:
+    ErrorStmt(QString);
+    void execute(Environment &) override;
+    void visualize(int) override;
+};
+
 #endif // STMT_H

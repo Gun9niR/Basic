@@ -2,13 +2,13 @@
 #include "mainwindow.h"
 #include "Exception.h"
 
-ConstantExpr::ConstantExpr(double v): val(v) { }
+ConstantExpr::ConstantExpr(int v): val(v) { }
 
 IdentifierExpr::IdentifierExpr(QString str): name(str) { }
 
 CompoundExpr::CompoundExpr(TokenPtr t, ExprPtr l, ExprPtr r): op(t), left(l), right(r) { }
 
-double ConstantExpr::evaluate(Environment& environment) {
+int ConstantExpr::evaluate(Environment& environment) {
     return val;
 }
 
@@ -27,7 +27,7 @@ void ConstantExpr::visualize(int indents) {
     MainWindow::getInstance().statementAppendRow(strToAppend);
 }
 
-double IdentifierExpr::evaluate(Environment& environment) {
+int IdentifierExpr::evaluate(Environment& environment) {
     if (!environment.isDefined(name)) {
         throw NoSuchVariable(name);
     }
@@ -48,9 +48,9 @@ void IdentifierExpr::visualize(int indents) {
     MainWindow::getInstance().statementAppendRow(strToAppend);
 }
 
-double CompoundExpr::evaluate(Environment& environment) {
-    double valLeft = left ? left->evaluate(environment) : 0;
-    double valRight = right->evaluate(environment);
+int CompoundExpr::evaluate(Environment& environment) {
+    int valLeft = left ? left->evaluate(environment) : 0;
+    int valRight = right->evaluate(environment);
     switch(op->type) {
     case TokenType::PLUS:
         return valLeft + valRight;
@@ -64,6 +64,9 @@ double CompoundExpr::evaluate(Environment& environment) {
         }
         return valLeft / valRight;
     case TokenType::POWER:
+        if (!valLeft && !valRight) {
+            throw PowerError("0 ^ 0 is not a number!");
+        }
         return pow(valLeft, valRight);
     default:
         throw QString("Parsing error");
