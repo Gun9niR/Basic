@@ -49,11 +49,11 @@ void MainWindow::resultAppendRow(QString str) {
 void MainWindow::on_clearButton_clicked()
 {
     Basic::getInstance().reset();
+    Basic::getInstance().clearEnvironment();
     clearDisplays();
 }
 
 void MainWindow::clickClearButton() {
-    // cannot use animateClick, as it seems to be async
     on_clearButton_clicked();
 }
 

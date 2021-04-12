@@ -137,7 +137,6 @@ void Basic::reset() {
     // reset all properties
     rawInstruction.clear();
     rawString.clear();
-    environment.reset();
 
     // close the file
     if (file.isOpen()) {
@@ -231,3 +230,6 @@ bool Basic::matchStmtWithoutLineNumber(QString& str, QString& stmt) {
     return false;
 }
 
+void Basic::clearEnvironment() {
+    environment.reset();
+}

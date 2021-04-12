@@ -51,6 +51,9 @@ public:
     // run the command
     void runCommand(CommandType type);
 
+    // clear environment, only invoked when running clear command
+    void clearEnvironment();
+
 private:
     // get line number from a instruction string
     LineNum getLineNumber(QString& str);
