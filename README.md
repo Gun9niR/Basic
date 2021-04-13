@@ -24,22 +24,6 @@
 - Detect invalid jump destination
 - Detect division by zero
 
-## Todo
-
-### Commands
-
-- [x] RUN
-- [x] LOAD
-- [x] CLEAR
-- [] HELP (message box)
-- [x] QUIT
-
-### Console
-
-- [x] Read a line
-- [x] Input variable
-- [x] Display error message
-
 ## Expression grammar
 
 ```text
