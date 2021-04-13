@@ -1,30 +1,55 @@
 # Basic Interpreter
 
-## Instruction Input
+A trivial interpreter implemented with AST.
 
-- Skip instruction with no line number (with alert)
-- Skip empty instruction (with alert)
-- Neglect empty line
-- Instruction with the same line number will overwrite the old one
-- Instruction can only be input from the input box or from the file
+## Installation
+
+- Build within Qt
+- Or: Download the executable from [release](https://github.com/Gun9niR/Basic/releases/tag/v1.0), which is compiled for **Windows** only.
+
+## Statements, Expressions and Commands
+
+Check the [documentation](https://github.com/Gun9niR/Basic/blob/master/Basic-doc.pdf) for valid statements, expressions and commands.
+
+## Behaviour Specification (IMPORTANT)
+
+The documentation describes the fundamental behaviours of the interpreter, but lots of details are neglected. Also, I've made a bit of modification to the interface to make it more usable.
+
+- UI modification: A text browser named “报错、提示信息” is added to display error message and extra information, such as message of successful execution.
+- Context system: In my implementation of Basic interpreter, there's no program-specific context. That is to say, all variables are defined in a **global context**, so it's perfectly fine if you define `x` in a program and use it in another. Only by runnning the `CLEAR` command can you clear all variables in the gloabal context.
+- Instruction input: Only three statements: `INPUT`, `LET` and `PRINT` can be entered without a preceding line number. The rest of the statements require a line number at the beginning, otherwise they cannot be stored in “代码” section.
+- Syntax tree visualization: The syntax tree is generated when executing the `RUN` command. All of the statements that is stored in “代码” will be scanned, parsed and visualized in “语句与语法树” section. On encountering any error, an error message will replace the syntax tree, pointing out what exactly is the problem.
+- Division: All numbers are treated as integers, so division works like that in C++, where `3/5` produces `0`.
+- Variable naming: Variables must start with a letter or underscore.
+- Line number range: Line number falls in the interval of $[1, 1000000]$. Preceding $0$s are allowed.
+- Negative sign: `-` doesn't have to be nested in a pair of parentheses. For example, `3 + -5` yields `-2`, not an error.
 
 ## Error Handling
 
+This section lists all kinds of errors that the interpreter can detect in each stage of execution.
+
 ### Scanning
 
-- Detect invalid character (except for comment)
+- Detect invalid character. Valid characters include letters (upper and lower case), mathmatical operands (+ - * / < > =), underscore, parenthesis, space, `\n`, `\t`, `\r`, `\n`.The only exception is the `REM` statement, where you can input anything as its content.
 
 ### Parsing
 
-- Detect non-statement code or grammar error
+- Detect syntax error.
 
 ### Interpreting
 
-- Detect undefined variable
-- Detect invalid jump destination
-- Detect division by zero
+- Detect undefined variable.
+- Detect invalid jump destination.
+- Detect division by zero.
+- Detect invalid input in `INPUT` statement.
+- Detect multiple statements in a line (which is not allowed in my implementation).
+- Detect power(0, 0). By mathmatical definitions, power(0, 0) invalid.
 
-## Expression grammar
+## Design notes
+
+### Algorithm to build AST
+
+I use **recursive descent parsing** to build the syntax tree. The grammar is as follows.
 
 ```text
 expression      ->  addition
@@ -36,8 +61,7 @@ unary           ->  (("-") unary) | primary
 primary         ->  NUMBER | ("("expression")")
 ```
 
-## Design notes
+### Code detials
 
-- Singleton pattern: make `Basic` and `MainWindow` globally accessable to all files
-- Visitor pattern: did not use it because it warrants public accessibility of expr properties, and add more function calls (2 more calls for each expr and stmt)
-- `shared_ptr` extensive use of it avoid excessive pass by value
+- Singleton pattern: make `Basic` and `MainWindow` accessible to all files, avoiding useage of any `extern` keyword.
+- `shared_ptr`: There's no native pointer in my program. `shared_ptr` handles all memory management.
