@@ -120,6 +120,7 @@ void Basic::handleRawInstruction(QString& str) {
     // check for empty instruction
     if (str.isEmpty()) {
         if (rawInstruction.count(codeLineNum)) {
+            rawString.erase(codeLineNum);
             rawInstruction.erase(codeLineNum);
             displayCode();
             return;
