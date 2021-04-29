@@ -10,6 +10,10 @@
 #include <vector>
 #include "qfile.h"
 #include "QApplication"
+#include "QColor"
+#include "QTextEdit"
+#include "QTextCursor"
+#include "QDebug"
 
 using std::vector;
 using std::map;
@@ -42,7 +46,10 @@ enum TokenType {
     ERROR
 };
 
+// line number of code
 typedef unsigned long LineNum;
+// line number of text browser
+typedef unsigned long TextLineNum;
 
 static QString HELP_MESSAGE = "=========== Basic Interpreter ===========\n"
                               "============== Made by Gzd ==============\n"
@@ -75,5 +82,8 @@ static QString HELP_MESSAGE = "=========== Basic Interpreter ===========\n"
                               "   - 只输入行号不输入程序可以删除对应行上的语句(如果该语句已经存在)\n"
                               "   - 从文件中读入代码相当于将文件内容逐行输入命令行\n"
                               "更多细节请查看README";
+
+static QColor RED = QColor(255, 100, 100);
+static QColor GREEN = QColor(100, 255, 100);
 
 #endif // CONSTS_H

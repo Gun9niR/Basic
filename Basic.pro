@@ -41,7 +41,8 @@ HEADERS += \
     Stmt.h \
     Token.h \
     consts.h \
-    mainwindow.h \
+    mainwindow.h \ \
+    util.h
 
 FORMS += \
     mainwindow.ui

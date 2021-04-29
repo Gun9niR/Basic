@@ -50,9 +50,11 @@ class InputStmt:  public QObject, public Stmt {
 private:
     const TokenPtr name;
     int input;
+    bool isInputValid;
 
 public slots:
     void receiveInput(int);
+    void receiveInvalidInput();
 
 public:
     InputStmt(TokenPtr name);

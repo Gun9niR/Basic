@@ -14,9 +14,11 @@ Interpreter::Interpreter(map<LineNum, QString>& rawInstructions, Environment& en
 // NoSuchVariable
 // EndSignal
 
-void Interpreter::interpret() {
-    // scan instructions
-    for (auto rawInstructionIter = rawInstructions.begin(); rawInstructionIter != rawInstructions.end(); ++rawInstructionIter) {
+void Interpreter::processRawInstruction() {
+    // scan and parse instructions
+    TextLineNum textLineNum = 0;
+
+    for (auto rawInstructionIter = rawInstructions.begin(); rawInstructionIter != rawInstructions.end(); ++rawInstructionIter, ++textLineNum) {
         shared_ptr<QList<TokenPtr>> tokenList;
         try {
             tokenList = scanner.getTokens(rawInstructionIter->second);
@@ -24,6 +26,7 @@ void Interpreter::interpret() {
             // get scanning error, but don't print it, just store it with an ERROR token
             tokenList = make_shared<QList<TokenPtr>>();
             tokenList->push_back(make_shared<Token>(TokenType::ERROR, errMsg));
+            highlights[textLineNum] = RED;
         }
 
         StmtPtr stmt;
@@ -31,6 +34,7 @@ void Interpreter::interpret() {
             stmt = parser.getStmt(tokenList);
         } catch (QString errMsg) {
             stmt = make_shared<ErrorStmt>(errMsg);
+            highlights[textLineNum] = RED;
         }
 
         stmt->visualize(rawInstructionIter->first);
@@ -38,6 +42,37 @@ void Interpreter::interpret() {
         stmts[rawInstructionIter->first] = stmt;
     }
 
+    setCodeDisplayHighlight();
+}
+
+void Interpreter::setCodeDisplayHighlight() {
+    QList<QTextEdit::ExtraSelection> extras;
+    MainWindow& mainWindow = MainWindow::getInstance();
+    QTextCursor cursor = mainWindow.getCodeDisplayerCursor();
+
+    for (const auto &line: highlights) {
+        QTextBlockFormat format;
+        format.setBackground(line.second);
+        setCursorY(cursor, line.first);
+        cursor.select(QTextCursor::LineUnderCursor);
+        cursor.setBlockFormat(format);
+//        QTextEdit::ExtraSelection extraSelection;
+//         extraSelection.cursor = cursor;
+//         setCursorY(cursor, line.first);
+//         extraSelection.cursor.movePosition(QTextCursor::StartOfLine);
+//         extraSelection.cursor.movePosition(QTextCursor::EndOfLine);
+//         extraSelection.format.setProperty(QTextFormat::FullWidthSelection, true);
+//         extraSelection.format.setBackground(line.second);
+//         extras.append(extraSelection);
+    }
+
+    // mainWindow.setCodeDisplayHighlight(extras);
+}
+
+void Interpreter::interpret() {
+    processRawInstruction();
+
+    // todo: change pc initialization due to debug mode
     pc = stmts.begin();
 
     while (pc != stmts.end()) {

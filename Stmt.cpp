@@ -44,12 +44,17 @@ void PrintStmt::visualize(int lineNum) {
     expr->visualize(1);
 }
 
-InputStmt::InputStmt(TokenPtr name): name(name) {
+InputStmt::InputStmt(TokenPtr name): name(name), isInputValid(true) {
     connect(&MainWindow::getInstance(), &MainWindow::sendInput, this, &InputStmt::receiveInput);
+    connect(&MainWindow::getInstance(), &MainWindow::sendInvalidInput, this, &InputStmt::receiveInvalidInput);
 }
 
 void InputStmt::receiveInput(int x) {
     input = x;
+}
+
+void InputStmt::receiveInvalidInput() {
+    isInputValid = false;
 }
 
 void InputStmt::execute(Environment& environment) {
@@ -58,8 +63,9 @@ void InputStmt::execute(Environment& environment) {
     MainWindow::getInstance().waitInput();
     QEventLoop listener;
     connect(&MainWindow::getInstance(), &MainWindow::sendInput, &listener, &QEventLoop::quit);
+    connect(&MainWindow::getInstance(), &MainWindow::sendInvalidInput, &listener, &QEventLoop::quit);
     listener.exec();
-    if (input == std::numeric_limits<int>::quiet_NaN()) {
+    if (!isInputValid) {
         MainWindow::getInstance().finishInput();
         throw InvalidInput();
     }

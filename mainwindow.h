@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "consts.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -67,6 +68,8 @@ public:
 signals:
     void sendInput(int);
 
+    void sendInvalidInput();
+
 public:
     void disableInput();
 
@@ -76,6 +79,9 @@ public:
 
     void finishInput();
 
+    void setCodeDisplayHighlight(QList<QTextEdit::ExtraSelection>&);
+
+    QTextCursor getCodeDisplayerCursor();
 private:
     Ui::MainWindow *ui;
 

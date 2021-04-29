@@ -4,7 +4,6 @@
 #include "qmessagebox.h"
 #include <memory>
 #include "Basic.h"
-#include "qdebug.h"
 
 MainWindow& MainWindow::getInstance() {
     static MainWindow w;
@@ -80,7 +79,7 @@ void MainWindow::on_console_returnPressed()
         str = str.mid(2);
         int num = str.toInt(&isNumber);
         if (!isNumber) {
-            emit sendInput(std::numeric_limits<int>::quiet_NaN());
+            emit sendInvalidInput();
         } else {
             emit sendInput(num);
         }
@@ -182,7 +181,14 @@ void MainWindow::clearCode() {
     ui->codeDisplay->clear();
 }
 
-void MainWindow::on_helpButton_clicked()
-{
+void MainWindow::on_helpButton_clicked() {
     Basic::getInstance().runCommand(CommandType::HELP);
+}
+
+QTextCursor MainWindow::getCodeDisplayerCursor() {
+    return QTextCursor(ui->codeDisplay->document());
+}
+
+void MainWindow::setCodeDisplayHighlight(QList<QTextEdit::ExtraSelection>& extras) {
+    ui->codeDisplay->setExtraSelections(extras);
 }
