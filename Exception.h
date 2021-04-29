@@ -28,7 +28,7 @@ private:
     QString name;
 
 public:
-    NoSuchVariable(QString);
+    NoSuchVariable(const QString&);
     QString getMsg() const override;
 };
 
@@ -42,7 +42,7 @@ private:
     QString errorMsg;
 
 public:
-   ScanOrParseError(QString);
+   ScanOrParseError(const QString&);
    QString getMsg() const override;
 };
 
@@ -56,7 +56,30 @@ private:
     QString errorMsg;
 
 public:
-    PowerError(QString errorMsg);
+    PowerError(const QString&);
+    QString getMsg() const override;
+};
+
+class PrintfParamMismatch: public Exception {
+public:
+    typedef enum {MORE, FEWER} ParamDifference;
+
+private:
+    ParamDifference diff;
+
+public:
+    PrintfParamMismatch(ParamDifference diff);
+    QString getMsg() const override;
+
+};
+
+class StringInCompoundExpr: public Exception {
+private:
+    // quote might change
+    QString lexeme;
+
+public:
+    StringInCompoundExpr(const QString&);
     QString getMsg() const override;
 };
 

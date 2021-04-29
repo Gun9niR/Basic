@@ -4,10 +4,11 @@
 #include "consts.h"
 #include "Environment.h"
 #include "Token.h"
+#include "Value.h"
 
 class Expr {
 public:
-    virtual int evaluate(Environment &) = 0;
+    virtual Value evaluate(Environment &) = 0;
     virtual void visualize(int) = 0;
 };
 
@@ -15,11 +16,13 @@ typedef shared_ptr<Expr> ExprPtr;
 
 class ConstantExpr: public Expr {
 private:
-    const int val;
+    const Value val;
 
 public:
     ConstantExpr(int v);
-    int evaluate(Environment &) override;
+    ConstantExpr(const QString&);
+    ConstantExpr(const Value&);
+    Value evaluate(Environment &) override;
     void visualize(int) override;
 };
 
@@ -29,7 +32,7 @@ private:
 
 public:
     IdentifierExpr(QString str);
-    int evaluate(Environment &) override;
+    Value evaluate(Environment &) override;
     void visualize(int) override;
 };
 
@@ -42,7 +45,7 @@ private:
 
 public:
     CompoundExpr(TokenPtr t, ExprPtr l, ExprPtr r);
-    int evaluate(Environment &) override;
+    Value evaluate(Environment &) override;
     void visualize(int) override;
 };
 #endif // EXPR_H

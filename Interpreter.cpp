@@ -56,17 +56,7 @@ void Interpreter::setCodeDisplayHighlight() {
         setCursorY(cursor, line.first);
         cursor.select(QTextCursor::LineUnderCursor);
         cursor.setBlockFormat(format);
-//        QTextEdit::ExtraSelection extraSelection;
-//         extraSelection.cursor = cursor;
-//         setCursorY(cursor, line.first);
-//         extraSelection.cursor.movePosition(QTextCursor::StartOfLine);
-//         extraSelection.cursor.movePosition(QTextCursor::EndOfLine);
-//         extraSelection.format.setProperty(QTextFormat::FullWidthSelection, true);
-//         extraSelection.format.setBackground(line.second);
-//         extras.append(extraSelection);
     }
-
-    // mainWindow.setCodeDisplayHighlight(extras);
 }
 
 void Interpreter::interpret() {

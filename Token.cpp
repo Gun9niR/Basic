@@ -2,7 +2,7 @@
 
 Token::Token(TokenType t,
              QString l,
-             int v): type(t), lexeme(l), value(v) { }
+             Value v): type(t), lexeme(l), value(v) { }
 
 QDebug operator<<(QDebug dbg, const Token & token) {
     QString typeName;
@@ -70,10 +70,16 @@ QDebug operator<<(QDebug dbg, const Token & token) {
         case COMMENT:
             typeName = "COMMENT";
             break;
+        case STRING:
+            typeName = "STRING";
+            break;
+        case COMMA:
+            typeName = "COMMA";
+            break;
     }
     QString msg = "Type name: " + typeName + ", Lexeme: " + token.lexeme;
     if (token.type == TokenType::NUMBER) {
-        msg += ", Value: " + QString::number(token.value);
+        msg += ", Value: " + token.value.toString();
     }
     dbg << msg;
     return dbg;

@@ -27,6 +27,7 @@ SOURCES += \
     Scanner.cpp \
     Stmt.cpp \
     Token.cpp \
+    Value.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -40,6 +41,7 @@ HEADERS += \
     Scanner.h \
     Stmt.h \
     Token.h \
+    Value.h \
     consts.h \
     mainwindow.h \ \
     util.h

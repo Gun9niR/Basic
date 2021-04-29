@@ -58,7 +58,7 @@ multiplication  ->  power (("*" | "/" power)*
 unaryPower      ->  ("-" unaryPower) | power
 power           ->  unary ("**" power)?
 unary           ->  (("-") unary) | primary
-primary         ->  NUMBER | ("("expression")")
+primary         ->  NUMBER | STRING | ("("expression")")
 ```
 
 ### Code detials

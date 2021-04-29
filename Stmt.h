@@ -2,9 +2,11 @@
 #define STMT_H
 
 #include "consts.h"
+#include "Exception.h"
 #include "Environment.h"
 #include "Token.h"
 #include "Expr.h"
+#include "util.h"
 
 class Stmt {
 public:
@@ -49,12 +51,9 @@ class InputStmt:  public QObject, public Stmt {
     Q_OBJECT
 private:
     const TokenPtr name;
-    int input;
-    bool isInputValid;
-
+    QString inputText;
 public slots:
-    void receiveInput(int);
-    void receiveInvalidInput();
+    void receiveInput(const QString&);
 
 public:
     InputStmt(TokenPtr name);
@@ -81,6 +80,17 @@ private:
 
 public:
     IfStmt(TokenPtr, ExprPtr, ExprPtr, int);
+    void execute(Environment &) override;
+    void visualize(int) override;
+};
+
+class PrintfStmt: public Stmt {
+private:
+    const TokenPtr format;
+    const vector<ExprPtr> params;
+
+public:
+    PrintfStmt(TokenPtr, const vector<ExprPtr>&);
     void execute(Environment &) override;
     void visualize(int) override;
 };

@@ -39,13 +39,13 @@ private slots:
     void on_helpButton_clicked();
 
 public:
-    void codeAppendRow(QString str);
+    void codeAppendRow(const QString& str);
 
-    void statementAppendRow(QString str);
+    void statementAppendRow(const QString& str);
 
-    void resultAppendRow(QString str);
+    void resultAppendRow(const QString& str);
 
-    void errorAppendRow(QString str);
+    void errorAppendRow(const QString& str);
 
     void clickClearButton();
 
@@ -66,9 +66,7 @@ public:
     void scrollErrorDisplayToTop();
 
 signals:
-    void sendInput(int);
-
-    void sendInvalidInput();
+    void sendInput(const QString&);
 
 public:
     void disableInput();
@@ -78,8 +76,6 @@ public:
     void waitInput();
 
     void finishInput();
-
-    void setCodeDisplayHighlight(QList<QTextEdit::ExtraSelection>&);
 
     QTextCursor getCodeDisplayerCursor();
 private:

@@ -26,6 +26,7 @@ private:
         {"IF", TokenType::IF},
         {"THEN", TokenType::THEN},
         {"END", TokenType::END},
+        {"PRINTF", TokenType::PRINTF}
     };
 
     // string being scanned
@@ -47,9 +48,11 @@ private:
 
     QChar peek();
 
-    QStringRef getNumber();
+    TokenPtr getNumber();
 
-    QStringRef getIdentifier();
+    TokenPtr getIdentifier();
+
+    TokenPtr getString(const QChar&);
 
 public:
     Scanner();

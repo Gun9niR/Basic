@@ -63,7 +63,7 @@ shared_ptr<InputStmt> Parser::getInputStmt() {
 shared_ptr<GotoStmt> Parser::getGotoStmt() {
     int lineNum;
     if (match(TokenType::NUMBER)) {
-        lineNum = static_cast<int>(advance()->value);
+        lineNum = static_cast<int>(advance()->value.getIntVal());
     } else {
         error("Expect line number");
     }
@@ -92,12 +92,32 @@ shared_ptr<IfStmt> Parser::getIfStmt() {
     consume(TokenType::THEN, "IF requires a THEN");
 
     if (match(TokenType::NUMBER)) {
-        lineNum = static_cast<int>(advance()->value);
+        lineNum = static_cast<int>(advance()->value.getIntVal());
     }
 
     checkEnd();
 
     return make_shared<IfStmt>(op, expr1, expr2, lineNum);
+}
+
+shared_ptr<PrintfStmt> Parser::getPrintfStmt() {
+    TokenPtr format;
+    vector<ExprPtr> params;
+
+    if (match(TokenType::STRING)) {
+        format = advance();
+    } else {
+        error("Expect format string");
+    }
+
+    while (match(TokenType::COMMA)) {
+        advance();
+        params.emplace_back(expression());
+    }
+
+    checkEnd();
+
+    return make_shared<PrintfStmt>(format, params);
 }
 
 shared_ptr<EndStmt> Parser::getEndStmt() {
@@ -169,7 +189,7 @@ ExprPtr Parser::unary() {
 }
 
 shared_ptr<Expr> Parser::primary() {
-    if (match(TokenType::NUMBER)) {
+    if (match({TokenType::NUMBER, TokenType::STRING})) {
         return make_shared<ConstantExpr>(advance()->value);
     }
     if (match(TokenType::IDENTIFIER)) {
@@ -192,7 +212,7 @@ bool Parser::match(TokenType type) {
     return type == (*current)->type;
 }
 
-bool Parser::match(vector<TokenType> types) {
+bool Parser::match(const vector<TokenType>& types) {
     if (isAtEnd()) {
         return false;
     }
@@ -233,6 +253,9 @@ StmtPtr Parser::getStmt(shared_ptr<QList<TokenPtr>> tokens) {
     case TokenType::IF:
         stmt = getIfStmt();
         break;
+    case TokenType::PRINTF:
+        stmt = getPrintfStmt();
+        break;
     case TokenType::END:
         stmt = getEndStmt();
         break;
@@ -258,7 +281,7 @@ void Parser::error(QString errMsg) {
     throw QString(errMsg);
 }
 
-void Parser::consume(TokenType type, QString errMsg) {
+void Parser::consume(TokenType type, const QString& errMsg) {
     if (match(type)) {
         ++current;
     } else {
@@ -270,7 +293,7 @@ void Parser::checkEnd() {
     if (!isAtEnd()) {
         QString errMsg = "Excessive symbols at the end of the line: ";
         while (!isAtEnd()) {
-            errMsg += advance()->lexeme;
+            errMsg += "<" + advance()->lexeme + "> ";
         }
         throw errMsg;
     }

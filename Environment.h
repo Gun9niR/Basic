@@ -1,21 +1,22 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 #include "consts.h"
+#include "Value.h"
 
 class Environment {
 public:
-    void set(QString name, int value);
+    void set(const QString& name, const Value& value);
 
-    int get(QString name);
+    Value get(const QString& name);
 
-    bool isDefined(QString name);
+    bool isDefined(const QString& name);
 
     Environment();
 
     void reset();
 
 private:
-    map<QString, int> symbolTable;
+    map<QString, Value> symbolTable;
 };
 
 #endif // ENVIRONMENT_H

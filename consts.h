@@ -4,16 +4,17 @@
 #include <unordered_map>
 #include <map>
 #include <memory>
-#include "QString"
-#include "QList"
 #include <cmath>
 #include <vector>
-#include "qfile.h"
+#include "QFile"
 #include "QApplication"
 #include "QColor"
 #include "QTextEdit"
 #include "QTextCursor"
 #include "QDebug"
+#include "QEventLoop"
+#include "QString"
+#include "QList"
 
 using std::vector;
 using std::map;
@@ -28,16 +29,16 @@ enum CommandType {
 enum TokenType {
     // single-character token
     LEFT_PAREN, RIGHT_PAREN, PLUS, MINUS, STAR, SLASH,
-    EQUAL, LESS, GREATER,
+    EQUAL, LESS, GREATER, COMMA,
 
     // two-character token
     POWER,
 
     // literal
-    IDENTIFIER, NUMBER,
+    IDENTIFIER, NUMBER, STRING,
 
     // keyword
-    REM, LET, PRINT, INPUT, GOTO, IF, THEN, END,
+    REM, LET, PRINT, INPUT, GOTO, IF, THEN, END, PRINTF,
 
     // comment
     COMMENT,
@@ -46,12 +47,17 @@ enum TokenType {
     ERROR
 };
 
+enum ValueType {
+    INT, STR, NONE
+};
+
 // line number of code
 typedef unsigned long LineNum;
 // line number of text browser
 typedef unsigned long TextLineNum;
 
-static QString HELP_MESSAGE = "=========== Basic Interpreter ===========\n"
+static const QString PRINTF_PLACEHOLDER = "{}";
+static const QString HELP_MESSAGE = "=========== Basic Interpreter ===========\n"
                               "============== Made by Gzd ==============\n"
                               "1. 基本命令\n"
                               "   RUN:   运行保存在代码框中的程序\n"
@@ -83,7 +89,6 @@ static QString HELP_MESSAGE = "=========== Basic Interpreter ===========\n"
                               "   - 从文件中读入代码相当于将文件内容逐行输入命令行\n"
                               "更多细节请查看README";
 
-static QColor RED = QColor(255, 100, 100);
-static QColor GREEN = QColor(100, 255, 100);
-
+static const QColor RED = QColor(255, 100, 100);
+static const QColor GREEN = QColor(100, 255, 100);
 #endif // CONSTS_H

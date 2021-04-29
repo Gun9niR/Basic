@@ -1,7 +1,5 @@
 #include "Stmt.h"
 #include "mainwindow.h"
-#include "Exception.h"
-#include "QEventLoop"
 
 RemStmt::RemStmt(TokenPtr comment): comment(comment) { }
 
@@ -26,7 +24,7 @@ void LetStmt::visualize(int lineNum) {
 }
 
 void LetStmt::execute(Environment& environment) {
-    int value = initializer->evaluate(environment);
+    Value value = initializer->evaluate(environment);
 
     environment.set(name->lexeme, value);
 }
@@ -34,8 +32,8 @@ void LetStmt::execute(Environment& environment) {
 PrintStmt::PrintStmt(ExprPtr expr): expr(expr) { }
 
 void PrintStmt::execute(Environment& environment) {
-    int res = expr->evaluate(environment);
-    MainWindow::getInstance().resultAppendRow(QString::number(res));
+    Value res = expr->evaluate(environment);
+    MainWindow::getInstance().resultAppendRow(res.toResultString());
 }
 
 void PrintStmt::visualize(int lineNum) {
@@ -44,32 +42,36 @@ void PrintStmt::visualize(int lineNum) {
     expr->visualize(1);
 }
 
-InputStmt::InputStmt(TokenPtr name): name(name), isInputValid(true) {
+InputStmt::InputStmt(TokenPtr name): name(name) {
     connect(&MainWindow::getInstance(), &MainWindow::sendInput, this, &InputStmt::receiveInput);
-    connect(&MainWindow::getInstance(), &MainWindow::sendInvalidInput, this, &InputStmt::receiveInvalidInput);
 }
 
-void InputStmt::receiveInput(int x) {
-    input = x;
-}
-
-void InputStmt::receiveInvalidInput() {
-    isInputValid = false;
+void InputStmt::receiveInput(const QString& inputText) {
+    this->inputText = inputText;
 }
 
 void InputStmt::execute(Environment& environment) {
     QString varName = name->lexeme;
+    MainWindow& mainWindow = MainWindow::getInstance();
 
     MainWindow::getInstance().waitInput();
     QEventLoop listener;
-    connect(&MainWindow::getInstance(), &MainWindow::sendInput, &listener, &QEventLoop::quit);
-    connect(&MainWindow::getInstance(), &MainWindow::sendInvalidInput, &listener, &QEventLoop::quit);
+    connect(&mainWindow, &MainWindow::sendInput, &listener, &QEventLoop::quit);
     listener.exec();
-    if (!isInputValid) {
+
+    // check if input is a number
+    bool isNumber;
+    int intVal = inputText.toInt(&isNumber);
+
+    if (isNumber) {
+        environment.set(varName, intVal);
+    } else if (isInputString(inputText)) {
+        environment.set(varName, inputText);
+    } else {
         MainWindow::getInstance().finishInput();
         throw InvalidInput();
     }
-    environment.set(varName, input);
+
     MainWindow::getInstance().finishInput();
 }
 
@@ -94,19 +96,29 @@ void GotoStmt::visualize(int lineNum) {
 IfStmt::IfStmt(TokenPtr op, ExprPtr e1, ExprPtr e2, int lineNum): op(op), expr1(e1), expr2(e2), lineNum(lineNum) { }
 
 void IfStmt::execute(Environment& environment) {
-    int val1 = expr1->evaluate(environment);
-    int val2 = expr2->evaluate(environment);
+    Value val1 = expr1->evaluate(environment);
+    Value val2 = expr2->evaluate(environment);
+
+    if (val1.isStr()) {
+        throw new StringInCompoundExpr(val1.toString());
+    }
+    if (val2.isStr()) {
+        throw new StringInCompoundExpr(val2.toString());
+    }
+
+    int intVal1 = val1.getIntVal();
+    int intVal2 = val2.getIntVal();
     bool condition = false;
 
     switch (op->type) {
     case TokenType::EQUAL:
-       condition = (val1 == val2);
+       condition = (intVal1 == intVal2);
         break;
     case TokenType::LESS:
-        condition = (val1 < val2);
+        condition = (intVal1 < intVal2);
         break;
     case TokenType::GREATER:
-        condition = (val1 > val2);
+        condition = (intVal1 > intVal2);
         break;
     default:
         break;
@@ -127,6 +139,40 @@ void IfStmt::visualize(int lineNum) {
     expr2->visualize(1);
 
     MainWindow::getInstance().statementAppendRow("\t" + QString::number(this->lineNum));
+}
+
+PrintfStmt::PrintfStmt(TokenPtr format, const vector<ExprPtr>& params): format(format), params(params) { }
+
+void PrintfStmt::execute(Environment& environment) {
+    // parser makes sure that value must be of type STRING
+    QString formatStr = format->value.getStrVal();
+
+    auto numOfPlaceholders = formatStr.count(PRINTF_PLACEHOLDER);
+    auto numOfParams = static_cast<int>(params.size());
+    if (numOfPlaceholders != numOfParams) {
+        throw PrintfParamMismatch(numOfParams > numOfPlaceholders ?
+                                      PrintfParamMismatch::ParamDifference::MORE :
+                                      PrintfParamMismatch::ParamDifference::FEWER
+                                      );
+    }
+
+    for (const ExprPtr& exprPtr: params) {
+        Value value = exprPtr->evaluate(environment);
+        QString valueStr = value.toResultString();
+        formatStr.replace(formatStr.indexOf(PRINTF_PLACEHOLDER), 2, valueStr);
+    }
+
+    MainWindow::getInstance().resultAppendRow(formatStr);
+}
+
+void PrintfStmt::visualize(int lineNum) {
+    MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " PRINTF"));
+
+    MainWindow::getInstance().statementAppendRow("\t" + format->value.toString());
+
+    for (const ExprPtr& exprPtr: params) {
+        exprPtr->visualize(1);
+    }
 }
 
 EndStmt::EndStmt() { }

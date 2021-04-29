@@ -60,6 +60,13 @@ void Scanner::getOneToken(shared_ptr<QList<TokenPtr>> list) {
     case '>':
         list->push_back(make_shared<Token>(TokenType::GREATER, ">"));
         break;
+    case ',':
+        list->push_back(make_shared<Token>(TokenType::COMMA, ","));
+        break;
+    case '\'':
+    case '"':
+        list->push_back(getString(c.unicode()));
+        break;
     case ' ':
     case '\t':
     case '\r':
@@ -67,27 +74,12 @@ void Scanner::getOneToken(shared_ptr<QList<TokenPtr>> list) {
         break;
     default: // handle numbers, keywords and identifiers
         if (c.isDigit()) {
-            // handle number
-            QString numString = getNumber().toString();
-            int val = numString.toInt();
-
-            list->push_back(make_shared<Token>(TokenType::NUMBER, numString, val));
+            list->push_back(getNumber());
         } else if (c.isLetter() || c == '_') {
-            QString identifier = getIdentifier().toString();
-
-            if (keywords.count(identifier)) {
-                // handle keyword
-                TokenType keywordType = keywords.at(identifier);
-                if (keywordType == TokenType::REM) {
-                    // REM and anything following will be ignored
-                    list->push_back(make_shared<Token>(keywords.at(identifier), identifier));
-                    throw DetectREM();
-                } else {
-                    list->push_back(make_shared<Token>(keywords.at(identifier), identifier));
-                }
-            } else {
-                // handle identifier
-                list->push_back(make_shared<Token>(TokenType::IDENTIFIER, identifier));
+            TokenPtr identifierPtr = getIdentifier();
+            list->push_back(getIdentifier());
+            if (identifierPtr->type == TokenType::REM) {
+                throw DetectREM();
             }
         } else {
             throw (QString("Unexpected character '") + c + "'");
@@ -112,16 +104,54 @@ QChar Scanner::peek() {
     return source[current];
 }
 
-QStringRef Scanner::getNumber() {
+TokenPtr Scanner::getNumber() {
     while (peek().isDigit()) {
         ++current;
     }
-    return source.mid(start, current - start);
+    QString numString = source.mid(start, current - start).toString();
+    int val = numString.toInt();
+    return make_shared<Token>(TokenType::NUMBER, numString, val);
 }
 
-QStringRef Scanner::getIdentifier() {
+TokenPtr Scanner::getIdentifier() {
     for (QChar c = peek(); c.isLetterOrNumber() || c == '_'; c = peek()) {
         ++current;
     }
-    return source.mid(start, current - start);
+
+
+    QString identifier = source.mid(start, current - start).toString();
+
+    if (keywords.count(identifier)) {
+        // handle keyword
+        TokenType keywordType = keywords.at(identifier);
+        if (keywordType == TokenType::REM) {
+            // REM and anything following will be ignored
+            return make_shared<Token>(keywords.at(identifier), identifier);
+        } else {
+            return make_shared<Token>(keywords.at(identifier), identifier);
+        }
+    } else {
+        // handle identifier
+        return make_shared<Token>(TokenType::IDENTIFIER, identifier);
+    }
+}
+
+TokenPtr Scanner::getString(const QChar& delimiter) {
+    QChar notAllowed = (delimiter.unicode() == '"') ? QChar('\'') : QChar('"');
+    QChar nextChar;
+
+    while ((nextChar = peek()).isPrint()) {
+        if (nextChar == notAllowed) {
+            throw QString(QString(nextChar) + " not allowed in a string");
+        } else if (nextChar == delimiter) {
+            ++current;
+            return make_shared<Token>(TokenType::STRING,
+                                      source.mid(start, current - start).toString(),
+                                      source.mid(start + 1, current - start - 2).toString()
+                                      );
+        }
+        ++current;
+    }
+
+    throw QString("Expect a " + QString(delimiter) + " at end the string");
 }

@@ -33,15 +33,15 @@ void MainWindow::on_loadButton_clicked()
     }
 }
 
-void MainWindow::codeAppendRow(QString str) {
+void MainWindow::codeAppendRow(const QString& str) {
     ui->codeDisplay->append(str);
 }
 
-void MainWindow::statementAppendRow(QString str) {
+void MainWindow::statementAppendRow(const QString& str) {
     ui->statementDisplay->append(str);
 }
 
-void MainWindow::resultAppendRow(QString str) {
+void MainWindow::resultAppendRow(const QString& str) {
     ui->resultDisplay->append(str);
 }
 
@@ -77,12 +77,7 @@ void MainWindow::on_console_returnPressed()
     } else {
         bool isNumber = false;
         str = str.mid(2);
-        int num = str.toInt(&isNumber);
-        if (!isNumber) {
-            emit sendInvalidInput();
-        } else {
-            emit sendInput(num);
-        }
+        emit sendInput(str);
     }
 }
 
@@ -165,7 +160,7 @@ void MainWindow::on_saveButton_clicked()
     file.close();
 }
 
-void MainWindow::errorAppendRow(QString str) {
+void MainWindow::errorAppendRow(const QString& str) {
     ui->errorDisplay->append(str);
 }
 
@@ -187,8 +182,4 @@ void MainWindow::on_helpButton_clicked() {
 
 QTextCursor MainWindow::getCodeDisplayerCursor() {
     return QTextCursor(ui->codeDisplay->document());
-}
-
-void MainWindow::setCodeDisplayHighlight(QList<QTextEdit::ExtraSelection>& extras) {
-    ui->codeDisplay->setExtraSelections(extras);
 }

@@ -18,9 +18,9 @@ private:
     bool isAtEnd();
 
     // check if current->type matches
-    bool match(vector<TokenType>);
+    bool match(const vector<TokenType>&);
     bool match(TokenType);
-    void consume(TokenType, QString);
+    void consume(TokenType, const QString&);
     TokenPtr advance();
 
     shared_ptr<RemStmt> getRemStmt();
@@ -34,6 +34,8 @@ private:
     shared_ptr<GotoStmt> getGotoStmt();
 
     shared_ptr<IfStmt> getIfStmt();
+
+    shared_ptr<PrintfStmt> getPrintfStmt();
 
     shared_ptr<EndStmt> getEndStmt();
 

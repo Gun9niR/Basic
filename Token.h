@@ -2,16 +2,16 @@
 #define TOKEN_H
 
 #include "consts.h"
-#include "QDebug"
+#include "Value.h"
 
 class Token {
 public:
     TokenType type;
     QString lexeme;
-    int value;
+    Value value;
 
 public:
-    Token(TokenType t, QString l, int v = std::numeric_limits<int>::quiet_NaN());
+    Token(TokenType t, QString l, Value v = Value::NO_VALUE);
 
     friend QDebug operator<<(QDebug dbg, const Token & token);
 };

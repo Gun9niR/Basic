@@ -4,15 +4,15 @@ Environment::Environment() {
     symbolTable.clear();
 }
 
-void Environment::set(QString name, int value) {
+void Environment::set(const QString& name, const Value& value) {
     symbolTable[name] = value;
 }
 
-int Environment::get(QString name) {
+Value Environment::get(const QString& name) {
     return symbolTable[name];
 }
 
-bool Environment::isDefined(QString name) {
+bool Environment::isDefined(const QString& name) {
     return symbolTable.count(name);
 }
 

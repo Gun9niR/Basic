@@ -2,32 +2,30 @@
 #include "mainwindow.h"
 #include "Exception.h"
 
-ConstantExpr::ConstantExpr(int v): val(v) { }
+ConstantExpr::ConstantExpr(int intVal): val(intVal) { }
+
+ConstantExpr::ConstantExpr(const QString& str): val(str) { }
+
+ConstantExpr::ConstantExpr(const Value& val): val(val) { }
 
 IdentifierExpr::IdentifierExpr(QString str): name(str) { }
 
 CompoundExpr::CompoundExpr(TokenPtr t, ExprPtr l, ExprPtr r): op(t), left(l), right(r) { }
 
-int ConstantExpr::evaluate(Environment& environment) {
+Value ConstantExpr::evaluate(Environment& environment) {
     return val;
 }
 
 void ConstantExpr::visualize(int indents) {
-    QString strToAppend = "";
-
-    // appendTabs
-    for (int i = 0; i < indents; ++i) {
-        strToAppend += "\t";
-    }
+    QString strToAppend = QString(indents, '\t');
 
     // append number
-    strToAppend += QString::number(val);
-
+    strToAppend += val.toString();
 
     MainWindow::getInstance().statementAppendRow(strToAppend);
 }
 
-int IdentifierExpr::evaluate(Environment& environment) {
+Value IdentifierExpr::evaluate(Environment& environment) {
     if (!environment.isDefined(name)) {
         throw NoSuchVariable(name);
     }
@@ -48,26 +46,37 @@ void IdentifierExpr::visualize(int indents) {
     MainWindow::getInstance().statementAppendRow(strToAppend);
 }
 
-int CompoundExpr::evaluate(Environment& environment) {
-    int valLeft = left ? left->evaluate(environment) : 0;
-    int valRight = right->evaluate(environment);
+Value CompoundExpr::evaluate(Environment& environment) {
+    Value valLeft = left ? left->evaluate(environment) : Value::NO_VALUE;
+    Value valRight = right->evaluate(environment);
+
+    if (valLeft.isStr()) {
+        throw StringInCompoundExpr(valLeft.toString());
+    }
+    if (valRight.isStr()) {
+        throw StringInCompoundExpr(valRight.toString());
+    }
+
+    int intLeft = valLeft.getIntVal();
+    int intRight = valRight.getIntVal();
+
     switch(op->type) {
     case TokenType::PLUS:
-        return valLeft + valRight;
+        return intLeft + intRight;
     case TokenType::MINUS:
-        return valLeft - valRight;
+        return intLeft - intRight;
     case TokenType::STAR:
-        return valLeft * valRight;
+        return intLeft * intRight;
     case TokenType::SLASH:
-        if (!valRight) {
+        if (!intRight) {
             throw DivisionByZero();
         }
-        return valLeft / valRight;
+        return intLeft / intRight;
     case TokenType::POWER:
-        if (!valLeft && !valRight) {
+        if (!intLeft && !intRight) {
             throw PowerError("0 ^ 0 is not a number!");
         }
-        return pow(valLeft, valRight);
+        return pow(intLeft, intRight);
     default:
         throw QString("Parsing error");
     }
