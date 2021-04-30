@@ -7,18 +7,10 @@
 #include "Scanner.h"
 #include "Parser.h"
 #include "Interpreter.h"
+#include "MainWindow.h"
 
 class Basic {
 private:
-    const std::unordered_map<QString, CommandType> COMMANDS {
-        { "RUN", CommandType::RUN },
-        { "LOAD", CommandType::LOAD },
-        { "CLEAR", CommandType::CLEAR },
-        { "HELP", CommandType::HELP },
-        { "QUIT", CommandType::QUIT },
-        { "LIST", CommandType::LIST },
-    };
-
     // code as string, tokens and statements
     map<LineNum, QString> rawInstruction;
     map<LineNum, QString> rawString;
@@ -27,7 +19,7 @@ private:
     QFile file;
     bool isLoadingFile;
 
-    shared_ptr<Interpreter> interpreter;
+    unique_ptr<Interpreter> interpreter;
     Environment environment;
 
     Basic();
@@ -45,8 +37,20 @@ public:
     // insert raw instruction from console or file
     void handleRawInstruction(QString& str);
 
-    // instantiate interpreter and interpret
-    void interpret();
+    // start debugging mode
+    void startDebug();
+
+    // finish debugging mode, called by mainwindow
+    void finishDebug();
+
+    // interpret all code
+    void interpretAll();
+
+    // interpret one line, called only in debugging mode, when the interpreter is not null
+    void debugStep();
+
+    // interpret the rest of the code, called only in debugging mode
+    void interpretRest();
 
     // run the command
     void runCommand(CommandType type);

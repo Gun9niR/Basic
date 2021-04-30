@@ -1,5 +1,5 @@
 #include "Expr.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "Exception.h"
 
 ConstantExpr::ConstantExpr(int intVal): val(intVal) { }

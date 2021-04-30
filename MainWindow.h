@@ -12,9 +12,13 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+    typedef enum {
+        RUN, DEBUG, IDLE, INPUT
+    } State;
 
 private:
-    bool isRunning;
+    State state, prevState;
+
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -38,6 +42,8 @@ private slots:
 
     void on_helpButton_clicked();
 
+    void on_debugButton_clicked();
+
 public:
     void codeAppendRow(const QString& str);
 
@@ -47,13 +53,21 @@ public:
 
     void errorAppendRow(const QString& str);
 
-    void clickClearButton();
+    void clickRunButton();
 
     void clickLoadButton();
 
-    void clickRunButton();
+    void clickClearButton();
+
+    void clickHelpButton();
+
+    void clickSaveButton();
+
+    void clickDebugButton();
 
     void clearDisplays();
+
+    void clearRuntimeDisplays();
 
     void clearResult();
 
@@ -65,22 +79,24 @@ public:
 
     void scrollErrorDisplayToTop();
 
-signals:
-    void sendInput(const QString&);
+    void setRunningModeUI();
 
-public:
-    void disableInput();
+    void setIdleModeUI();
 
-    void enableInput();
+    void setDebugModeUI();
 
     void waitInput();
 
     void finishInput();
 
+    void finishDebug();
+
     QTextCursor getCodeDisplayerCursor();
+
+signals:
+    void sendInput(const QString&);
+
 private:
     Ui::MainWindow *ui;
-
-    bool onInputStmt;
 };
 #endif // MAINWINDOW_H

@@ -1,9 +1,4 @@
 #include "Basic.h"
-#include "mainwindow.h"
-#include "QMessageBox"
-#include "QFileDialog"
-
-#include <QRegularExpression>
 
 Basic::~Basic() { }
 
@@ -14,13 +9,27 @@ Basic& Basic::getInstance() {
     return basic;
 }
 
-void Basic::interpret() {
-    MainWindow::getInstance().disableInput();
+void Basic::startDebug() {
+    interpreter = make_unique<Interpreter>(rawInstruction, environment);
+    interpreter->startDebugging();
+}
 
-    interpreter = make_shared<Interpreter>(rawInstruction, environment);
-    interpreter->interpret();
+void Basic::finishDebug() {
+    interpreter.reset();
+}
 
-    MainWindow::getInstance().enableInput();
+void Basic::interpretAll() {
+    interpreter = make_unique<Interpreter>(rawInstruction, environment);
+    interpreter->interpretAll();
+    interpreter.reset();
+}
+
+void Basic::interpretRest() {
+    interpreter->interpretRest();
+}
+
+void Basic::debugStep() {
+    interpreter->debugStep();
 }
 
 void Basic::loadFile(QString fileName) {
@@ -205,9 +214,13 @@ void Basic::runCommand(CommandType type) {
         MainWindow::getInstance().clickClearButton();
         break;
     case CommandType::HELP:
-        MainWindow::getInstance().clearError();
-        MainWindow::getInstance().errorAppendRow(HELP_MESSAGE);
-        MainWindow::getInstance().scrollErrorDisplayToTop();
+        MainWindow::getInstance().clickHelpButton();
+        break;
+    case CommandType::SAVE:
+        MainWindow::getInstance().clickSaveButton();
+        break;
+    case CommandType::DEBUG:
+        MainWindow::getInstance().clickDebugButton();
         break;
     case CommandType::QUIT:
         QApplication::quit();

@@ -4,7 +4,7 @@ QT       += \
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++14
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -23,13 +23,14 @@ SOURCES += \
     Exception.cpp \
     Expr.cpp \
     Interpreter.cpp \
+    MainWindow.cpp \
     Parser.cpp \
     Scanner.cpp \
     Stmt.cpp \
     Token.cpp \
     Value.cpp \
-    main.cpp \
-    mainwindow.cpp
+    consts.cpp \
+    main.cpp
 
 HEADERS += \
     Basic.h \
@@ -37,13 +38,14 @@ HEADERS += \
     Exception.h \
     Expr.h \
     Interpreter.h \
+    MainWindow.h \
     Parser.h \
     Scanner.h \
     Stmt.h \
     Token.h \
     Value.h \
     consts.h \
-    mainwindow.h \ \
+    \ \
     util.h
 
 FORMS += \

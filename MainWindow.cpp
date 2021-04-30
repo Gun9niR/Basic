@@ -1,8 +1,5 @@
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "ui_mainwindow.h"
-#include "qfiledialog.h"
-#include "qmessagebox.h"
-#include <memory>
 #include "Basic.h"
 
 MainWindow& MainWindow::getInstance() {
@@ -16,10 +13,20 @@ MainWindow::~MainWindow() {
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , isRunning(false), ui(new Ui::MainWindow), onInputStmt(false)
+    , state(State::IDLE), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->statementDisplay->setTabStopWidth(4 * fontMetrics().width(' '));
+    this->setWindowTitle("GuiBasic");
+
+    QDesktopWidget desktop;
+
+    int width = this->frameGeometry().width();
+    int height = this->frameGeometry().height();
+    int screenWidth = desktop.screen()->width();
+    int screenHeight = desktop.screen()->height();
+
+    this->setGeometry((screenWidth/2)-(width/2),(screenHeight/2)-(height/2),width,height);
 }
 
 void MainWindow::on_loadButton_clicked()
@@ -52,12 +59,29 @@ void MainWindow::on_clearButton_clicked()
     clearDisplays();
 }
 
-void MainWindow::clickClearButton() {
-    on_clearButton_clicked();
+
+void MainWindow::clickRunButton() {
+    on_runButton_clicked();
 }
 
 void MainWindow::clickLoadButton() {
     on_loadButton_clicked();
+}
+
+void MainWindow::clickClearButton() {
+    on_clearButton_clicked();
+}
+
+void MainWindow::clickSaveButton() {
+    on_saveButton_clicked();
+}
+
+void MainWindow::clickHelpButton() {
+    on_helpButton_clicked();
+}
+
+void MainWindow::clickDebugButton() {
+    on_debugButton_clicked();
 }
 
 void MainWindow::clearDisplays() {
@@ -65,6 +89,7 @@ void MainWindow::clearDisplays() {
     ui->resultDisplay->clear();
     ui->statementDisplay->clear();
     ui->errorDisplay->clear();
+    ui->environmentDisplay->clear();
 }
 
 void MainWindow::on_console_returnPressed()
@@ -72,66 +97,104 @@ void MainWindow::on_console_returnPressed()
     QString str = ui->console->text().trimmed();
     ui->console->clear();
 
-    if (!onInputStmt) {
+    if (state != State::INPUT) {
+        clearRuntimeDisplays();
         Basic::getInstance().handleRawInstruction(str);
     } else {
-        bool isNumber = false;
         str = str.mid(2);
         emit sendInput(str);
     }
-}
-
-void MainWindow::clickRunButton() {
-    on_runButton_clicked();
 }
 
 void MainWindow::clearStatement() {
     ui->statementDisplay->clear();
 }
 
-void MainWindow::on_runButton_clicked()
-{
+void MainWindow::clearRuntimeDisplays() {
     clearResult();
     clearStatement();
     clearError();
-    isRunning = true;
-    Basic::getInstance().interpret();
-    isRunning = false;
 }
 
-void MainWindow::disableInput() {
+void MainWindow::on_runButton_clicked()
+{
+    setRunningModeUI();
+
+    if (state == State::IDLE) {
+        clearResult();
+        clearStatement();
+        clearError();
+        state = State::RUN;
+        Basic::getInstance().interpretAll();
+    } else {
+        state = State::RUN;
+        Basic::getInstance().interpretRest();
+    }
+
+    state = State::IDLE;
+    setIdleModeUI();
+}
+
+void MainWindow::setRunningModeUI() {
+    clearResult();
+    clearStatement();
+    clearError();
+    this->setWindowTitle("GuiBasic (Running)");
     ui->runButton->setDisabled(true);
+    ui->clearButton->setDisabled(true);
+    ui->loadButton->setDisabled(true);
+    ui->saveButton->setDisabled(true);
+    ui->console->setDisabled(true);
+    ui->debugButton->setDisabled(true);
+}
+
+void MainWindow::setIdleModeUI() {
+    ui->debugButton->setText("调试(DEBUG)");
+    this->setWindowTitle("GuiBasic");
+    ui->runButton->setDisabled(false);
+    ui->clearButton->setDisabled(false);
+    ui->loadButton->setDisabled(false);
+    ui->saveButton->setDisabled(false);
+    ui->console->setDisabled(false);
+    ui->debugButton->setDisabled(false);
+}
+
+void MainWindow::setDebugModeUI() {
+    clearResult();
+    clearStatement();
+    clearError();
+    ui->debugButton->setText("单步执行(STEP)");
+    this->setWindowTitle("GuiBasic (Debugging)");
     ui->clearButton->setDisabled(true);
     ui->loadButton->setDisabled(true);
     ui->saveButton->setDisabled(true);
     ui->console->setDisabled(true);
 }
 
-void MainWindow::enableInput() {
-    ui->runButton->setDisabled(false);
-    ui->clearButton->setDisabled(false);
-    ui->loadButton->setDisabled(false);
-    ui->saveButton->setDisabled(false);
-    ui->console->setDisabled(false);
-}
-
 void MainWindow::waitInput() {
     ui->console->setText("? ");
-    onInputStmt = true;
+    prevState = state;
+    state = State::INPUT;
     ui->console->setDisabled(false);
 }
 
 void MainWindow::finishInput() {
-    onInputStmt = false;
+    state = prevState;
     ui->console->clear();
-    if (isRunning) {
+    if (state == State::RUN || state == State::DEBUG) {
         ui->console->setDisabled(true);
     }
 }
 
+void MainWindow::finishDebug() {
+    state = State::IDLE;
+    setIdleModeUI();
+    Basic::getInstance().finishDebug();
+}
+
 void MainWindow::on_console_cursorPositionChanged(int oldPos, int newPos)
 {
-    if (onInputStmt && newPos < 2) {
+    if (state == INPUT && newPos < 2) {
         auto currentText = ui->console->text();
         if (currentText.length() > 2) {
             ui->console->setReadOnly(true);
@@ -142,10 +205,6 @@ void MainWindow::on_console_cursorPositionChanged(int oldPos, int newPos)
     } else {
         ui->console->setReadOnly(false);
     }
-}
-
-void MainWindow::clearResult() {
-    ui->resultDisplay->clear();
 }
 
 void MainWindow::on_saveButton_clicked()
@@ -164,12 +223,16 @@ void MainWindow::errorAppendRow(const QString& str) {
     ui->errorDisplay->append(str);
 }
 
-void MainWindow::clearError() {
-    ui->errorDisplay->clear();
-}
-
 void MainWindow::scrollErrorDisplayToTop() {
     ui->errorDisplay->moveCursor(QTextCursor::Start);
+}
+
+void MainWindow::clearResult() {
+    ui->resultDisplay->clear();
+}
+
+void MainWindow::clearError() {
+    ui->errorDisplay->clear();
 }
 
 void MainWindow::clearCode() {
@@ -177,9 +240,21 @@ void MainWindow::clearCode() {
 }
 
 void MainWindow::on_helpButton_clicked() {
-    Basic::getInstance().runCommand(CommandType::HELP);
+    clearError();
+    errorAppendRow(HELP_MESSAGE);
+    scrollErrorDisplayToTop();
 }
 
 QTextCursor MainWindow::getCodeDisplayerCursor() {
     return QTextCursor(ui->codeDisplay->document());
+}
+
+void MainWindow::on_debugButton_clicked() {
+    if (state == State::IDLE) {
+        state = State::DEBUG;
+        setDebugModeUI();
+        Basic::getInstance().startDebug();
+    } else {
+        Basic::getInstance().debugStep();
+    }
 }

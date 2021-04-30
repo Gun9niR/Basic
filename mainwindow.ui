@@ -244,7 +244,7 @@
             </font>
            </property>
            <property name="text">
-            <string>调试/单步</string>
+            <string>调试(DEBUG)</string>
            </property>
           </widget>
          </item>
@@ -270,7 +270,7 @@
             </font>
            </property>
            <property name="text">
-            <string>保存代码</string>
+            <string>保存代码(SAVE)</string>
            </property>
           </widget>
          </item>

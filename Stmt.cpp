@@ -1,5 +1,5 @@
 #include "Stmt.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 RemStmt::RemStmt(TokenPtr comment): comment(comment) { }
 

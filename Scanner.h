@@ -57,7 +57,7 @@ private:
 public:
     Scanner();
 
-    shared_ptr<QList<TokenPtr>> getTokens(QString str);
+    shared_ptr<QList<TokenPtr>> getTokens(const QString& str);
 };
 
 #endif // SCANNER_H
