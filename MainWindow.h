@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include "consts.h"
 
 QT_BEGIN_NAMESPACE
@@ -53,6 +52,8 @@ public:
 
     void errorAppendRow(const QString& str);
 
+    void environmentAppendRow(const QString& str);
+
     void clickRunButton();
 
     void clickLoadButton();
@@ -76,6 +77,8 @@ public:
     void clearStatement();
 
     void clearError();
+
+    void clearEnvironment();
 
     void scrollErrorDisplayToTop();
 

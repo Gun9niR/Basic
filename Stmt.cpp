@@ -27,6 +27,8 @@ void LetStmt::execute(Environment& environment) {
     Value value = initializer->evaluate(environment);
 
     environment.set(name->lexeme, value);
+
+    environment.displayVariables();
 }
 
 PrintStmt::PrintStmt(ExprPtr expr): expr(expr) { }
@@ -73,6 +75,7 @@ void InputStmt::execute(Environment& environment) {
     }
 
     MainWindow::getInstance().finishInput();
+    environment.displayVariables();
 }
 
 void InputStmt::visualize(int lineNum) {

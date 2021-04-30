@@ -19,10 +19,14 @@
 #include "QFileDialog"
 #include "QMessageBox"
 #include "QDesktopWidget"
+#include <QMainWindow>
 
 using std::vector;
+using std::sort;
 using std::map;
 using std::unordered_map;
+using std::pair;
+using std::make_pair;
 using std::shared_ptr;
 using std::unique_ptr;
 using std::make_shared;
@@ -61,6 +65,8 @@ enum ValueType {
 typedef unsigned long LineNum;
 // line number of text browser
 typedef unsigned long TextLineNum;
+// timestamp of varibale
+typedef unsigned long TimeStamp;
 
 extern const QString PRINTF_PLACEHOLDER;
 extern const QString HELP_MESSAGE;

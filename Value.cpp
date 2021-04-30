@@ -1,5 +1,11 @@
 #include "Value.h"
 
+const unordered_map<ValueType, QString> Value::TYPE_NAME {
+    { ValueType::INT, "INT" },
+    { ValueType::STR, "STR" },
+    { ValueType::NONE, "NONE" },
+};
+
 Value Value::NO_VALUE = Value();
 
 Value::Value(): type(ValueType::NONE) { }
@@ -32,6 +38,10 @@ QString Value::toResultString() const {
     default:
         return "NO_VALUE";
     }
+}
+
+QString Value::getTypeName() const {
+    return TYPE_NAME.at(type);
 }
 
 QString Value::getStrVal() const {

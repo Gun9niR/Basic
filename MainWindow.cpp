@@ -52,10 +52,16 @@ void MainWindow::resultAppendRow(const QString& str) {
     ui->resultDisplay->append(str);
 }
 
+void MainWindow::environmentAppendRow(const QString& str) {
+    ui->environmentDisplay->append(str);
+}
+
+
 void MainWindow::on_clearButton_clicked()
 {
-    Basic::getInstance().reset();
-    Basic::getInstance().clearEnvironment();
+    Basic& basic = Basic::getInstance();
+    basic.reset();
+    basic.clearEnvironment();
     clearDisplays();
 }
 
@@ -84,7 +90,7 @@ void MainWindow::clickDebugButton() {
     on_debugButton_clicked();
 }
 
-void MainWindow::clearDisplays() {
+void MainWindow:: clearDisplays() {
     ui->codeDisplay->clear();
     ui->resultDisplay->clear();
     ui->statementDisplay->clear();
@@ -108,6 +114,10 @@ void MainWindow::on_console_returnPressed()
 
 void MainWindow::clearStatement() {
     ui->statementDisplay->clear();
+}
+
+void MainWindow::clearEnvironment() {
+    ui->environmentDisplay->clear();
 }
 
 void MainWindow::clearRuntimeDisplays() {

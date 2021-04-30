@@ -16,7 +16,7 @@ The documentation describes the fundamental behaviours of the interpreter, but l
 
 - UI modification: A text browser named “报错、提示信息” is added to display error message and extra information, such as message of successful execution.
 - Context system: In my implementation of Basic interpreter, there's no program-specific context. That is to say, all variables are defined in a **global context**, so it's perfectly fine if you define `x` in a program and use it in another. Only by runnning the `CLEAR` command can you clear all variables in the gloabal context.
-- Instruction input: Only three statements: `INPUT`, `LET` and `PRINT` can be entered without a preceding line number **when entered from the console, not from a file**. The rest of the statements require a line number at the beginning, otherwise they cannot be stored in “代码” section.
+- Instruction input: Only four statements: `INPUT`, `LET`， `PRINT` and `PRINTF` can be entered without a preceding line number **when entered from the console, not from a file**. The rest of the statements require a line number at the beginning, otherwise they cannot be stored in “代码” section.
 - Syntax tree visualization: The syntax tree is generated when executing the `RUN` command. All of the statements that is stored in “代码” will be scanned, parsed and visualized in “语句与语法树” section. On encountering any error, an error message will replace the syntax tree, pointing out what exactly is the problem.
 - Division: All numbers are treated as integers, so division works like that in C++, where `3/5` produces `0`.
 - Variable naming: Variables must start with a letter or underscore.

@@ -67,7 +67,7 @@ LineNum Basic::getLineNumber(QString& str) {
         throw QString("An instruction must start with a line number");
     }
 
-    // calculate line number,  string
+    // calculate line number
     int len = str.length();
     int pos = 0;
     while (pos < len && str[pos].isDigit()) {
@@ -147,23 +147,12 @@ void Basic::reset() {
     // reset all properties
     rawInstruction.clear();
     rawString.clear();
-
+    interpreter.reset();
     // close the file
     if (file.isOpen()) {
         file.close();
     }
     file.setFileName("");
-}
-
-int Basic::getDigits(int x) {
-    int ret = 0;
-
-    while (x) {
-        ++ret;
-        x /= 10;
-    }
-
-    return ret;
 }
 
 void Basic::displayInstruction() {
@@ -239,6 +228,9 @@ bool Basic::matchStmtWithoutLineNumber(QString& str, QString& stmt) {
         return true;
     } else if (str.startsWith("LET")) {
         stmt = "LET";
+        return true;
+    } else if (str.startsWith("PRINTF")) {
+        stmt = "PRINTF";
         return true;
     }
     return false;

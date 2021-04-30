@@ -58,7 +58,7 @@ public:
     // enter debug mode
     void startDebugging();
 
-    //
+    // interpret one line of code in debug mode
     void debugStep();
 
     // interpret every line of code from start to the end, and display success message on success

@@ -5,11 +5,11 @@
 
 class Value {
 private:
+    static const unordered_map<ValueType, QString> TYPE_NAME;
+
     ValueType type;
     int intVal;
     QString strVal;
-
-
 
 public:
     Value();
@@ -21,7 +21,10 @@ public:
     // convert value to string that is displayed in message, string is surrounded with quote
     QString toString() const;
 
+    // convert value to string that is used for display as program result
     QString toResultString() const;
+
+    QString getTypeName() const;
 
     bool isStr() const;
 

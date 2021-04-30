@@ -24,4 +24,11 @@ inline void showMessage(const QString& title, const QString& content) {
     QMessageBox::information(nullptr, title, content,
                              QMessageBox::Yes, QMessageBox::Yes);
 }
+
+inline int getDigits(int x) {
+    int ret = 0;
+    while (x) { ++ret; x /= 10; }
+    return ret;
+}
+
 #endif // UTIL_H

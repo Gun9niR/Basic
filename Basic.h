@@ -2,6 +2,7 @@
 #define BASIC_H
 
 #include "consts.h"
+#include "util.h"
 #include "Stmt.h"
 #include "Token.h"
 #include "Scanner.h"
@@ -73,9 +74,6 @@ private:
 
     // check if a string match those three stmts
     bool matchStmtWithoutLineNumber(QString& str, QString& stmt);
-
-    // helper function, get the number of digits of an integer
-    int getDigits(int x);
 };
 
 #endif // BASIC_H
