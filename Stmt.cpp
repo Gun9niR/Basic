@@ -44,9 +44,7 @@ void PrintStmt::visualize(int lineNum) {
     expr->visualize(1);
 }
 
-InputStmt::InputStmt(TokenPtr name): name(name) {
-    connect(&MainWindow::getInstance(), &MainWindow::sendInput, this, &InputStmt::receiveInput);
-}
+InputStmt::InputStmt(TokenPtr name): name(name) { }
 
 void InputStmt::receiveInput(const QString& inputText) {
     this->inputText = inputText;
@@ -58,8 +56,11 @@ void InputStmt::execute(Environment& environment) {
 
     MainWindow::getInstance().waitInput();
     QEventLoop listener;
+    connect(&mainWindow, &MainWindow::sendInput, this, &InputStmt::receiveInput);
     connect(&mainWindow, &MainWindow::sendInput, &listener, &QEventLoop::quit);
     listener.exec();
+    disconnect(&mainWindow, &MainWindow::sendInput, this, &InputStmt::receiveInput);
+    disconnect(&mainWindow, &MainWindow::sendInput, &listener, &QEventLoop::quit);
     // check if input is a number
     bool isNumber;
     int intVal = inputText.toInt(&isNumber);
