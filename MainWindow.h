@@ -16,10 +16,15 @@ class MainWindow : public QMainWindow
     } State;
 
 private:
+    Ui::MainWindow *ui;
     State state, prevState;
 
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    void disableAllButtons();
+
+    void enableAllButtons();
 
 public:
     MainWindow(MainWindow &other) = delete;
@@ -82,11 +87,13 @@ public:
 
     void scrollErrorDisplayToTop();
 
-    void setRunningModeUI();
+    void setRunningModeUI(bool);
 
     void setIdleModeUI();
 
-    void setDebugModeUI();
+    void setDebugModeUI(bool);
+
+    void setInputModeUI();
 
     void waitInput();
 
@@ -98,8 +105,5 @@ public:
 
 signals:
     void sendInput(const QString&);
-
-private:
-    Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

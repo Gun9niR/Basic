@@ -47,8 +47,8 @@ void Interpreter::displaySyntaxTree() {
 }
 
 void Interpreter::startDebugging() {
-    if (!rawInstructions.size()) {
-        // alert debugging mode finished
+    if (rawInstructions.empty()) {
+        MainWindow::getInstance().finishDebug();
         return;
     }
     processRawInstruction();
@@ -73,6 +73,9 @@ void Interpreter::mapCodeLine2TextLine() {
 }
 
 void Interpreter::interpretAll() {
+    if (rawInstructions.empty()) {
+        return;
+    }
     processRawInstruction();
     mapCodeLine2TextLine();
     displaySyntaxTree();
@@ -95,7 +98,7 @@ void Interpreter::interpretRest() {
 }
 
 void Interpreter::debugStep() {
-    removeCurrentLineColor();
+    auto prevPc = pc;
     if (!interpretOne()) {
         showMessage("出错", "该语句有错误");
         MainWindow::getInstance().finishDebug();
@@ -103,9 +106,11 @@ void Interpreter::debugStep() {
     }
     if (pc == stmts.end()) {
         showMessage("调试结束", "被调试的程序正常结束");
+        removeCurrentLineColor();
         MainWindow::getInstance().finishDebug();
         return;
     }
+    removeLineColor(prevPc);
     prepareInterpretOne();
 }
 
@@ -165,8 +170,12 @@ bool Interpreter::interpretFromCurrentPc() {
     return true;
 }
 
-void Interpreter::removeCurrentLineColor() {
+void Interpreter::removeLineColor(map<LineNum, StmtPtr>::iterator& pc) {
     removeCodeDisplayHighlight(codeLine2TextLine[pc->first]);
+}
+
+void Interpreter::removeCurrentLineColor() {
+    removeLineColor(pc);
 }
 
 void Interpreter::setCurrentLineColor(const QColor& color) {

@@ -1,0 +1,2 @@
+010 INPUT n
+020 REM Input 0

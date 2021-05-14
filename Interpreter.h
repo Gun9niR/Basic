@@ -46,6 +46,9 @@ private:
     // interpret one
     bool interpretOne();
 
+    // remove highlight color of of the line given as parameter
+    void removeLineColor(map<LineNum, StmtPtr>::iterator&);
+
     // remove highlight color of current line pointed to by pc
     void removeCurrentLineColor();
 

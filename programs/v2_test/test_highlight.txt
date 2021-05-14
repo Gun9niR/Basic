@@ -1,0 +1,8 @@
+010 REM This line is super looooooooooooooooooooooooooooooooooooooooooooooooooooooong
+015 GOTO 70
+020 This line should be highlighted red
+030 This line should be highlighted red
+040 This line should be highlighted red
+050 This line should be highlighted red
+060 This line should be highlighted red
+070 This line should be highlighted, first green then blue

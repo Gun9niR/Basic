@@ -128,7 +128,7 @@ void MainWindow::clearRuntimeDisplays() {
 
 void MainWindow::on_runButton_clicked()
 {
-    setRunningModeUI();
+    setRunningModeUI(true);
 
     if (state == State::IDLE) {
         clearResult();
@@ -145,51 +145,69 @@ void MainWindow::on_runButton_clicked()
     setIdleModeUI();
 }
 
-void MainWindow::setRunningModeUI() {
-    clearResult();
-    clearStatement();
-    clearError();
+void MainWindow::setRunningModeUI(bool clear) {
+    if (clear) {
+        clearResult();
+        clearStatement();
+        clearError();
+    }
     this->setWindowTitle("GuiBasic (Running)");
-    ui->runButton->setDisabled(true);
-    ui->clearButton->setDisabled(true);
-    ui->loadButton->setDisabled(true);
-    ui->saveButton->setDisabled(true);
+    disableAllButtons();
     ui->console->setDisabled(true);
-    ui->debugButton->setDisabled(true);
 }
 
 void MainWindow::setIdleModeUI() {
     ui->debugButton->setText("调试(DEBUG)");
     this->setWindowTitle("GuiBasic");
-    ui->runButton->setDisabled(false);
-    ui->clearButton->setDisabled(false);
-    ui->loadButton->setDisabled(false);
-    ui->saveButton->setDisabled(false);
+    enableAllButtons();
     ui->console->setDisabled(false);
-    ui->debugButton->setDisabled(false);
 }
 
-void MainWindow::setDebugModeUI() {
-    clearResult();
-    clearStatement();
-    clearError();
+void MainWindow::setDebugModeUI(bool clear) {
+    if (clear) {
+        clearResult();
+        clearStatement();
+        clearError();
+    }
     ui->debugButton->setText("单步执行(STEP)");
+    ui->debugButton->setDisabled(false);
+    ui->runButton->setDisabled(false);
     this->setWindowTitle("GuiBasic (Debugging)");
     ui->clearButton->setDisabled(true);
     ui->loadButton->setDisabled(true);
     ui->saveButton->setDisabled(true);
+    ui->helpButton->setDisabled(true);
     ui->console->setDisabled(true);
+}
+
+void MainWindow::setInputModeUI() {
+    disableAllButtons();
+    ui->console->setDisabled(false);
 }
 
 void MainWindow::waitInput() {
     ui->console->setText("? ");
     prevState = state;
+    setInputModeUI();
     state = State::INPUT;
-    ui->console->setDisabled(false);
 }
 
 void MainWindow::finishInput() {
     state = prevState;
+    switch (prevState) {
+    case State::RUN:
+        setRunningModeUI(false);
+        break;
+    case State::DEBUG:
+        setDebugModeUI(false);
+        break;
+    case State::IDLE:
+        setIdleModeUI();
+        break;
+    default:
+        break;
+    }
+
     ui->console->clear();
     if (state == State::RUN || state == State::DEBUG) {
         ui->console->setDisabled(true);
@@ -262,9 +280,27 @@ QTextCursor MainWindow::getCodeDisplayerCursor() {
 void MainWindow::on_debugButton_clicked() {
     if (state == State::IDLE) {
         state = State::DEBUG;
-        setDebugModeUI();
+        setDebugModeUI(true);
         Basic::getInstance().startDebug();
     } else {
         Basic::getInstance().debugStep();
     }
+}
+
+void MainWindow::disableAllButtons() {
+    ui->runButton->setDisabled(true);
+    ui->clearButton->setDisabled(true);
+    ui->loadButton->setDisabled(true);
+    ui->saveButton->setDisabled(true);
+    ui->debugButton->setDisabled(true);
+    ui->helpButton->setDisabled(true);
+}
+
+void MainWindow::enableAllButtons() {
+    ui->runButton->setDisabled(false);
+    ui->clearButton->setDisabled(false);
+    ui->loadButton->setDisabled(false);
+    ui->saveButton->setDisabled(false);
+    ui->debugButton->setDisabled(false);
+    ui->helpButton->setDisabled(false);
 }

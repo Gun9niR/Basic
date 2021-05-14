@@ -60,7 +60,6 @@ void InputStmt::execute(Environment& environment) {
     QEventLoop listener;
     connect(&mainWindow, &MainWindow::sendInput, &listener, &QEventLoop::quit);
     listener.exec();
-
     // check if input is a number
     bool isNumber;
     int intVal = inputText.toInt(&isNumber);

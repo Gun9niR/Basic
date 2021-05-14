@@ -1,0 +1,3 @@
+020 LET x = "sdasa"
+030 LET x = "sadasdsada"
+040 INPUT x

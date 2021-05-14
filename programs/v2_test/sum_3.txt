@@ -1,0 +1,4 @@
+10 INPUT a
+20 INPUT b
+30 INPUT c
+40 PRINT a+b+c
