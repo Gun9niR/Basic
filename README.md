@@ -1,6 +1,6 @@
 # Basic Interpreter
 
-A trivial interpreter implemented with AST.
+A trivial interpreter implemented with AST and recursive descent. The repo is no longer maintained.
 
 ## Installation
 
