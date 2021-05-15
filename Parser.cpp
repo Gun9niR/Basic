@@ -60,6 +60,20 @@ shared_ptr<InputStmt> Parser::getInputStmt() {
     return make_shared<InputStmt>(name);
 }
 
+shared_ptr<InputsStmt> Parser::getInputsStmt() {
+    TokenPtr name;
+
+    if (match(TokenType::IDENTIFIER)) {
+        name = advance();
+    } else {
+        error("Expect variable name");
+    }
+
+    checkEnd();
+
+    return make_shared<InputsStmt>(name);
+}
+
 shared_ptr<GotoStmt> Parser::getGotoStmt() {
     int lineNum;
     if (match(TokenType::NUMBER)) {
@@ -246,6 +260,9 @@ StmtPtr Parser::getStmt(shared_ptr<QList<TokenPtr>> tokens) {
         break;
     case TokenType::INPUT:
         stmt = getInputStmt();
+        break;
+    case TokenType::INPUTS:
+        stmt = getInputsStmt();
         break;
     case TokenType::GOTO:
         stmt = getGotoStmt();

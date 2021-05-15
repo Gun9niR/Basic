@@ -51,6 +51,7 @@ void Interpreter::startDebugging() {
         MainWindow::getInstance().finishDebug();
         return;
     }
+    clearCodeDisplayHighlight();
     processRawInstruction();
     mapCodeLine2TextLine();
     pc = stmts.begin();
@@ -76,6 +77,7 @@ void Interpreter::interpretAll() {
     if (rawInstructions.empty()) {
         return;
     }
+    clearCodeDisplayHighlight();
     processRawInstruction();
     mapCodeLine2TextLine();
     displaySyntaxTree();
@@ -106,7 +108,7 @@ void Interpreter::debugStep() {
     }
     if (pc == stmts.end()) {
         showMessage("调试结束", "被调试的程序正常结束");
-        removeCurrentLineColor();
+        removeLineColor(prevPc);
         MainWindow::getInstance().finishDebug();
         return;
     }
@@ -203,4 +205,13 @@ void Interpreter::removeCodeDisplayHighlight(TextLineNum textLineNum) {
     format.clearBackground();
     setCursorY(cursor, textLineNum);
     cursor.setBlockFormat(format);
+}
+
+void Interpreter::clearCodeDisplayHighlight() {
+    QTextCursor cursor = MainWindow::getInstance().getCodeDisplayerCursor();
+
+    QTextBlockFormat clearFormat;
+    clearFormat.clearBackground();
+    cursor.select(QTextCursor::Document);
+    cursor.setBlockFormat(clearFormat);
 }

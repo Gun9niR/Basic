@@ -97,10 +97,10 @@ void Basic::handleRawInstruction(QString& str) {
     }
 
     // check if str is among the statements that can be executed
-    QString oneOfTheThreeStmts = nullptr;
-    if (matchStmtWithoutLineNumber(str, oneOfTheThreeStmts)) {
+    QString oneOfTheFiveStmts = nullptr;
+    if (matchStmtWithoutLineNumber(str, oneOfTheFiveStmts)) {
         if (isLoadingFile) {
-            MainWindow::getInstance().errorAppendRow(oneOfTheThreeStmts + " statement must follow a line number in the file!");
+            MainWindow::getInstance().errorAppendRow(oneOfTheFiveStmts + " statement must follow a line number in the file!");
             return;
         } else {
             Interpreter::interpret(str, environment);
@@ -225,6 +225,9 @@ bool Basic::matchStmtWithoutLineNumber(QString& str, QString& stmt) {
         return true;
     } else if (str.startsWith("INPUT")) {
         stmt = "INPUT";
+        return true;
+    } else if (str.startsWith("INPUTS")) {
+        stmt = "INPUTS";
         return true;
     } else if (str.startsWith("LET")) {
         stmt = "LET";

@@ -22,11 +22,12 @@ private:
         {"LET", TokenType::LET},
         {"PRINT", TokenType::PRINT},
         {"INPUT", TokenType::INPUT},
+        {"INPUTS", TokenType::INPUTS},
         {"GOTO", TokenType::GOTO},
         {"IF", TokenType::IF},
         {"THEN", TokenType::THEN},
         {"END", TokenType::END},
-        {"PRINTF", TokenType::PRINTF}
+        {"PRINTF", TokenType::PRINTF},
     };
 
     // string being scanned

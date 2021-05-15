@@ -31,6 +31,8 @@ private:
 
     shared_ptr<InputStmt> getInputStmt();
 
+    shared_ptr<InputsStmt> getInputsStmt();
+
     shared_ptr<GotoStmt> getGotoStmt();
 
     shared_ptr<IfStmt> getIfStmt();

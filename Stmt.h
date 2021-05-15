@@ -47,7 +47,7 @@ public:
     void visualize(int) override;
 };
 
-class InputStmt:  public QObject, public Stmt {
+class InputStmt: public QObject, public Stmt {
     Q_OBJECT
 private:
     const TokenPtr name;
@@ -57,6 +57,20 @@ public slots:
 
 public:
     InputStmt(TokenPtr name);
+    void execute(Environment &) override;
+    void visualize(int) override;
+};
+
+class InputsStmt: public QObject, public Stmt {
+    Q_OBJECT
+private:
+    const TokenPtr name;
+    QString inputText;
+public slots:
+    void receiveInput(const QString&);
+
+public:
+    InputsStmt(TokenPtr name);
     void execute(Environment &) override;
     void visualize(int) override;
 };

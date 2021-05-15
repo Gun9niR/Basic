@@ -189,6 +189,7 @@ void MainWindow::waitInput() {
     ui->console->setText("? ");
     prevState = state;
     setInputModeUI();
+    ui->console->setFocus();
     state = State::INPUT;
 }
 

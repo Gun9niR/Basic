@@ -48,7 +48,7 @@ enum TokenType {
     IDENTIFIER, NUMBER, STRING,
 
     // keyword
-    REM, LET, PRINT, INPUT, GOTO, IF, THEN, END, PRINTF,
+    REM, LET, PRINT, INPUT, GOTO, IF, THEN, END, PRINTF, INPUTS,
 
     // comment
     COMMENT,

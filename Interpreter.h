@@ -33,6 +33,18 @@ private:
     // remove highlight codeDisplay at given line number (actually, block)
     void removeCodeDisplayHighlight(TextLineNum);
 
+    // clear all highlight in code display
+    void clearCodeDisplayHighlight();
+
+    // remove highlight color of of the line given as parameter
+    void removeLineColor(map<LineNum, StmtPtr>::iterator&);
+
+    // remove highlight color of current line pointed to by pc
+    void removeCurrentLineColor();
+
+    // set highlight color of current line pointed to by pc
+    void setCurrentLineColor(const QColor&);
+
     // map code line number to text line number to facilitate highlighting
     void mapCodeLine2TextLine();
 
@@ -45,15 +57,6 @@ private:
 
     // interpret one
     bool interpretOne();
-
-    // remove highlight color of of the line given as parameter
-    void removeLineColor(map<LineNum, StmtPtr>::iterator&);
-
-    // remove highlight color of current line pointed to by pc
-    void removeCurrentLineColor();
-
-    // set highlight color of current line pointed to by pc
-    void setCurrentLineColor(const QColor&);
 
 public:
     Interpreter(map<LineNum, QString>&, Environment&);

@@ -67,8 +67,6 @@ void InputStmt::execute(Environment& environment) {
 
     if (isNumber) {
         environment.set(varName, intVal);
-    } else if (isInputString(inputText)) {
-        environment.set(varName, inputText);
     } else {
         MainWindow::getInstance().finishInput();
         throw InvalidInput();
@@ -80,6 +78,35 @@ void InputStmt::execute(Environment& environment) {
 
 void InputStmt::visualize(int lineNum) {
     MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " INPUT"));
+
+    MainWindow::getInstance().statementAppendRow("\t" + name->lexeme);
+}
+
+InputsStmt::InputsStmt(TokenPtr name): name(name) { }
+
+void InputsStmt::receiveInput(const QString& inputText) {
+    this->inputText = inputText;
+}
+
+void InputsStmt::execute(Environment& environment) {
+    QString varName = name->lexeme;
+    MainWindow& mainWindow = MainWindow::getInstance();
+
+    MainWindow::getInstance().waitInput();
+    QEventLoop listener;
+    connect(&mainWindow, &MainWindow::sendInput, this, &InputsStmt::receiveInput);
+    connect(&mainWindow, &MainWindow::sendInput, &listener, &QEventLoop::quit);
+    listener.exec();
+    disconnect(&mainWindow, &MainWindow::sendInput, this, &InputsStmt::receiveInput);
+    disconnect(&mainWindow, &MainWindow::sendInput, &listener, &QEventLoop::quit);
+
+    environment.set(varName, inputText);
+    MainWindow::getInstance().finishInput();
+    environment.displayVariables();
+}
+
+void InputsStmt::visualize(int lineNum) {
+    MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " INPUTS"));
 
     MainWindow::getInstance().statementAppendRow("\t" + name->lexeme);
 }
