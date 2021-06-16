@@ -43,6 +43,7 @@ This section lists all kinds of errors that the interpreter can detect in each s
 - Detect invalid jump destination.
 - Detect division by zero.
 - Detect invalid input in `INPUT` and `INPUTS` statement.
+- Detect mismatch mismatching arguments in `PRINTF`
 - Detect multiple statements in a line (which is not allowed in my implementation).
 - Detect power(0, 0). By mathmatical definitions, power(0, 0) invalid.
 
@@ -62,7 +63,7 @@ unary           ->  (("-") unary) | primary
 primary         ->  NUMBER | STRING | ("("expression")")
 ```
 
-### Code detials
+### Code details
 
-- Singleton pattern: make `Basic` and `MainWindow` accessible to all files, avoiding useage of any `extern` keyword.
-- `shared_ptr`: There's no native pointer in my program. `shared_ptr` handles all memory management.
+- Singleton pattern: make `Basic` and `MainWindow` accessible to all files, avoiding useage of `extern` keyword and slow signal mechanism.
+- `shared_ptr` eliminates any memory leak.
