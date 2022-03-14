@@ -17,39 +17,40 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += include
+
 SOURCES += \
-    Basic.cpp \
-    Environment.cpp \
-    Exception.cpp \
-    Expr.cpp \
-    Interpreter.cpp \
-    MainWindow.cpp \
-    Parser.cpp \
-    Scanner.cpp \
-    Stmt.cpp \
-    Token.cpp \
-    Value.cpp \
-    consts.cpp \
-    main.cpp
+    src/Basic.cpp \
+    src/Environment.cpp \
+    src/Exception.cpp \
+    src/Expr.cpp \
+    src/Interpreter.cpp \
+    src/MainWindow.cpp \
+    src/Parser.cpp \
+    src/Scanner.cpp \
+    src/Stmt.cpp \
+    src/Token.cpp \
+    src/Value.cpp \
+    src/consts.cpp \
+    src/main.cpp
 
 HEADERS += \
-    Basic.h \
-    Environment.h \
-    Exception.h \
-    Expr.h \
-    Interpreter.h \
-    MainWindow.h \
-    Parser.h \
-    Scanner.h \
-    Stmt.h \
-    Token.h \
-    Value.h \
-    consts.h \
-    \ \
-    util.h
+    include/Basic.h \
+    include/Environment.h \
+    include/Exception.h \
+    include/Expr.h \
+    include/Interpreter.h \
+    include/MainWindow.h \
+    include/Parser.h \
+    include/Scanner.h \
+    include/Stmt.h \
+    include/Token.h \
+    include/Value.h \
+    include/consts.h \
+    include/util.h
 
 FORMS += \
-    mainwindow.ui
+    forms/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
