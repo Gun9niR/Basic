@@ -33,7 +33,7 @@ void MainWindow::on_loadButton_clicked()
 {
     // select file path with a dialogue
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open file"), "./", tr("All(*.*)"));
+        tr("Open file"), "./", tr("All(*.txt)"));
 
     if (!fileName.isEmpty()) {
         Basic::getInstance().loadFile(fileName);
