@@ -10,7 +10,7 @@ void RemStmt::execute(Environment& environment) {
 void RemStmt::visualize(int lineNum) {
     MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " REM"));
     // append comment
-    MainWindow::getInstance().statementAppendRow("\t" + comment->lexeme);
+    MainWindow::getInstance().statementAppendRow(SPACE + comment->lexeme);
 }
 
 LetStmt::LetStmt(TokenPtr name, ExprPtr initializer): name(name), initializer(initializer) { }
@@ -19,7 +19,7 @@ void LetStmt::visualize(int lineNum) {
     MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " LET ="));
 
     // append identifier
-    MainWindow::getInstance().statementAppendRow("\t" + name->lexeme);
+    MainWindow::getInstance().statementAppendRow(SPACE + name->lexeme);
     initializer->visualize(1);
 }
 
@@ -79,7 +79,7 @@ void InputStmt::execute(Environment& environment) {
 void InputStmt::visualize(int lineNum) {
     MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " INPUT"));
 
-    MainWindow::getInstance().statementAppendRow("\t" + name->lexeme);
+    MainWindow::getInstance().statementAppendRow(SPACE + name->lexeme);
 }
 
 InputsStmt::InputsStmt(TokenPtr name): name(name) { }
@@ -108,7 +108,7 @@ void InputsStmt::execute(Environment& environment) {
 void InputsStmt::visualize(int lineNum) {
     MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " INPUTS"));
 
-    MainWindow::getInstance().statementAppendRow("\t" + name->lexeme);
+    MainWindow::getInstance().statementAppendRow(SPACE + name->lexeme);
 }
 
 GotoStmt::GotoStmt(int lineNum): lineNum(lineNum) { }
@@ -120,7 +120,7 @@ void GotoStmt::execute(Environment& environment) {
 void GotoStmt::visualize(int lineNum) {
     MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " GOTO"));
 
-    MainWindow::getInstance().statementAppendRow("\t" + QString::number(lineNum));
+    MainWindow::getInstance().statementAppendRow(SPACE + QString::number(lineNum));
 }
 
 IfStmt::IfStmt(TokenPtr op, ExprPtr e1, ExprPtr e2, int lineNum): op(op), expr1(e1), expr2(e2), lineNum(lineNum) { }
@@ -164,11 +164,11 @@ void IfStmt::visualize(int lineNum) {
 
     expr1->visualize(1);
 
-    MainWindow::getInstance().statementAppendRow("\t" + op->lexeme);
+    MainWindow::getInstance().statementAppendRow(SPACE + op->lexeme);
 
     expr2->visualize(1);
 
-    MainWindow::getInstance().statementAppendRow("\t" + QString::number(this->lineNum));
+    MainWindow::getInstance().statementAppendRow(SPACE + QString::number(this->lineNum));
 }
 
 PrintfStmt::PrintfStmt(TokenPtr format, const vector<ExprPtr>& params): format(format), params(params) { }
@@ -198,7 +198,7 @@ void PrintfStmt::execute(Environment& environment) {
 void PrintfStmt::visualize(int lineNum) {
     MainWindow::getInstance().statementAppendRow(QString(QString::number(lineNum) + " PRINTF"));
 
-    MainWindow::getInstance().statementAppendRow("\t" + format->value.toString());
+    MainWindow::getInstance().statementAppendRow(SPACE + format->value.toString());
 
     for (const ExprPtr& exprPtr: params) {
         exprPtr->visualize(1);

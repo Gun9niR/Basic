@@ -18,7 +18,6 @@
 #include "QVariant"
 #include "QFileDialog"
 #include "QMessageBox"
-#include "QDesktopWidget"
 #include <QMainWindow>
 
 using std::vector;
@@ -69,6 +68,7 @@ typedef unsigned long TextLineNum;
 typedef unsigned long TimeStamp;
 
 extern const QString PRINTF_PLACEHOLDER;
+extern const QString SPACE;
 extern const QString HELP_MESSAGE;
 
 extern const QColor RED;

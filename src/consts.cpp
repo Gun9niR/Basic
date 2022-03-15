@@ -1,7 +1,7 @@
 #include "consts.h"
 
 const QString PRINTF_PLACEHOLDER = "{}";
-
+const QString SPACE = "    ";
 const QString HELP_MESSAGE = "=========== Basic Interpreter ===========\n"
                              "============== Made by Gzd ==============\n"
                              "1. 基本命令\n"

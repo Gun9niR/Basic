@@ -31,7 +31,7 @@ private:
     };
 
     // string being scanned
-    QStringRef source;
+    QString source;
 
     // pointers to source
     int start;

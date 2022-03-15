@@ -16,17 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
     , state(State::IDLE), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->statementDisplay->setTabStopWidth(4 * fontMetrics().width(' '));
+
     this->setWindowTitle("GuiBasic");
-
-    QDesktopWidget desktop;
-
-    int width = this->frameGeometry().width();
-    int height = this->frameGeometry().height();
-    int screenWidth = desktop.screen()->width();
-    int screenHeight = desktop.screen()->height();
-
-    this->setGeometry((screenWidth/2)-(width/2),(screenHeight/2)-(height/2),width,height);
 }
 
 void MainWindow::on_loadButton_clicked()

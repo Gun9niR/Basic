@@ -17,7 +17,11 @@ Value ConstantExpr::evaluate(Environment& environment) {
 }
 
 void ConstantExpr::visualize(int indents) {
-    QString strToAppend = QString(indents, '\t');
+    QString strToAppend;
+
+    for (int i = 0; i < indents; ++i) {
+        strToAppend += SPACE;
+    }
 
     // append number
     strToAppend += val.toString();
@@ -33,11 +37,11 @@ Value IdentifierExpr::evaluate(Environment& environment) {
 }
 
 void IdentifierExpr::visualize(int indents) {
-    QString strToAppend = "";
+    QString strToAppend;
 
     // appendTabs
     for (int i = 0; i < indents; ++i) {
-        strToAppend += "\t";
+        strToAppend += SPACE;
     }
 
     // append identifier
@@ -83,11 +87,11 @@ Value CompoundExpr::evaluate(Environment& environment) {
 }
 
 void CompoundExpr::visualize(int indents) {
-    QString strToAppend = "";
+    QString strToAppend;
 
     // appendTabs
     for (int i = 0; i < indents; ++i) {
-        strToAppend += "\t";
+        strToAppend += SPACE;
     }
 
     // append identifier

@@ -13,7 +13,7 @@ inline bool isInputString(const QString& inputStr) {
     if (len < 2) {
         return false;
     }
-    QStringRef content(&inputStr, 1, len - 2);
+    QString content = inputStr.mid(1, len - 2);
 
     return !(content.contains('"') || content.contains('\'')) &&
             ((inputStr.startsWith('"') && inputStr.endsWith('"')) ||

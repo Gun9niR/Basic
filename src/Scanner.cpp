@@ -6,7 +6,7 @@ Scanner::Scanner():
 
 shared_ptr<QList<TokenPtr>> Scanner::getTokens(const QString& str) {
     shared_ptr<QList<TokenPtr>> list = make_shared<QList<TokenPtr>>();
-    source = &str;
+    source = str;
     start = 0;
     current = 0;
     length = source.length();
@@ -99,7 +99,7 @@ QChar Scanner::advance() {
 
 QChar Scanner::peek() {
     if (isAtEnd()) {
-        return 0;
+        return QChar(0);
     }
     return source[current];
 }
@@ -108,7 +108,7 @@ TokenPtr Scanner::getNumber() {
     while (peek().isDigit()) {
         ++current;
     }
-    QString numString = source.mid(start, current - start).toString();
+    QString numString = source.mid(start, current - start);
     int val = numString.toInt();
     return make_shared<Token>(TokenType::NUMBER, numString, val);
 }
@@ -119,7 +119,7 @@ TokenPtr Scanner::getIdentifier() {
     }
 
 
-    QString identifier = source.mid(start, current - start).toString();
+    QString identifier = source.mid(start, current - start);
 
     if (keywords.count(identifier)) {
         // handle keyword
@@ -146,8 +146,8 @@ TokenPtr Scanner::getString(const QChar& delimiter) {
         } else if (nextChar == delimiter) {
             ++current;
             return make_shared<Token>(TokenType::STRING,
-                                      source.mid(start, current - start).toString(),
-                                      source.mid(start + 1, current - start - 2).toString()
+                                      source.mid(start, current - start),
+                                      source.mid(start + 1, current - start - 2)
                                       );
         }
         ++current;
