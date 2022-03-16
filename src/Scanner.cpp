@@ -109,7 +109,11 @@ TokenPtr Scanner::getNumber() {
         ++current;
     }
     QString numString = source.mid(start, current - start).toString();
-    int val = numString.toInt();
+    bool ok;
+    int val = numString.toInt(&ok);
+    if (!ok) {
+        throw numString + QString(" is not within valid range!");
+    }
     return make_shared<Token>(TokenType::NUMBER, numString, val);
 }
 
