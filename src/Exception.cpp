@@ -31,7 +31,7 @@ QString ScanOrParseError::getMsg() const {
 }
 
 QString InvalidInput::getMsg() const {
-    return "Input must be an integer!";
+    return "Input must be an integer within valid range!";
 }
 
 PowerError::PowerError(const QString& errorMsg): errorMsg(errorMsg) { }
